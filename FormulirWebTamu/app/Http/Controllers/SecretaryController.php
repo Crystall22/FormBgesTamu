@@ -9,17 +9,19 @@ class SecretaryController extends Controller
 {
     public function dashboard()
     {
-        $forms = Form::where('status', 'Pending')->get();
+        $forms = Form::where('status', 'under_review')->get();
         return view('secretary.dashboard', compact('forms'));
     }
 
-    public function addNoteAndForward(Request $request, Form $form)
+    public function addNote(Request $request, $id)
     {
-        $form->update([
-            'secretary_note' => $request->input('note')
-        ]);
+        $form = Form::find($id);
+        $form->note = $request->input('note');
+        $form->status = 'reviewed';
+        $form->save();
 
-        return redirect()->route('secretary.dashboard');
+        return redirect()->route('secretary.dashboard')->with('success', 'Form has been forwarded to management.');
     }
+
 }
 

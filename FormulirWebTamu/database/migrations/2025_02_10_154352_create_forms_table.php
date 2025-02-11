@@ -15,16 +15,16 @@ class CreateFormsTable extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->id(); // primary key
-            $table->string('guest_name'); // name of the guest
-            $table->string('guest_phone'); // guest's phone number
-            $table->string('guest_address'); // guest's address
-            $table->string('institution'); // institution
-            $table->date('date'); // form submission date
-            $table->text('purpose'); // purpose of the visit
-            $table->string('pdf_file'); // uploaded PDF file
-            $table->string('category'); // category (Business, Government, Enterprise)
-            $table->string('invoice_number'); // unique invoice number
-            $table->timestamps(); // created_at and updated_at
+            $table->string('guest_name'); // nama tamu
+            $table->string('guest_phone'); // nomor telepon tamu
+            $table->string('guest_address'); // alamat tamu
+            $table->string('institution'); // institusi asal tamu
+            $table->date('date'); // tanggal pengisian form
+            $table->text('purpose'); // tujuan kunjungan
+            $table->string('pdf_file'); // file PDF yang diunggah
+            $table->string('category'); // kategori form (Business, Government, Enterprise)
+            $table->string('invoice_number'); // nomor invoice yang unik
+            $table->timestamps(); // waktu pembuatan dan update
         });
     }
 

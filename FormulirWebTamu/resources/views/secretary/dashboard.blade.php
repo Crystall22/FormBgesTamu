@@ -1,15 +1,13 @@
-@extends('layouts.app')
+@foreach ($forms as $form)
+    <div class="form-card">
+        <h3>{{ $form->guest_name }} ({{ $form->category }})</h3>
+        <p>{{ $form->purpose }}</p>
+        <p>Submitted on: {{ $form->created_at }}</p>
 
-@section('content')
-<h1>Secretary Dashboard</h1>
-@foreach($forms as $form)
-    <div>
-        <h2>{{ $form->guest_name }} ({{ $form->category }})</h2>
-        <form action="{{ route('secretary.forward', $form->id) }}" method="POST">
+        <form action="{{ route('secretary.addNote', $form->id) }}" method="POST">
             @csrf
-            <textarea name="note" placeholder="Add a note">{{ $form->secretary_note }}</textarea>
+            <textarea name="note" placeholder="Add a note"></textarea>
             <button type="submit">Forward to Management</button>
         </form>
     </div>
 @endforeach
-@endsection

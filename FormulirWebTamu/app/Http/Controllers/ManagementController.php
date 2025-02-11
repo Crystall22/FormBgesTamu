@@ -9,19 +9,20 @@ class ManagementController extends Controller
 {
     public function dashboard()
     {
-        $forms = Form::where('status', '!=', 'Pending')->get();
+        $forms = Form::where('status', 'reviewed')
+            ->where('category', auth()->user()->department) // Match category with management department
+            ->get();
+
         return view('management.dashboard', compact('forms'));
     }
 
-    public function approve(Form $form)
+    public function updateStatus(Request $request, $id)
     {
-        $form->update(['status' => 'Approved']);
-        return redirect()->route('management.dashboard');
+        $form = Form::find($id);
+        $form->status = $request->input('status');
+        $form->save();
+
+        return redirect()->route('management.dashboard')->with('success', 'Form status updated.');
     }
 
-    public function reject(Form $form)
-    {
-        $form->update(['status' => 'Rejected']);
-        return redirect()->route('management.dashboard');
-    }
 }
