@@ -24,6 +24,7 @@ class CreateFormsTable extends Migration
             $table->string('pdf_file'); // file PDF yang diunggah
             $table->string('category'); // kategori form (Business, Government, Enterprise)
             $table->string('invoice_number'); // nomor invoice yang unik
+            $table->text('note')->nullable(); // catatan untuk secretary, nullable karena bisa kosong
             $table->timestamps(); // waktu pembuatan dan update
         });
     }

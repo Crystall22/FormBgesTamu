@@ -7,12 +7,14 @@ use App\Models\Form;
 
 class FormController extends Controller
 {
+    // Fungsi untuk menampilkan form receptionist
     public function create()
     {
         // Mengembalikan view untuk form receptionist
         return view('receptionist.buatform');
     }
 
+    // Fungsi untuk menampilkan dashboard dengan data form yang telah disubmit
     public function dashboard()
     {
         // Mengambil semua form yang ada di database
@@ -22,6 +24,7 @@ class FormController extends Controller
         return view('dashboard', compact('forms'));
     }
 
+    // Fungsi untuk menyimpan data form receptionist
     public function store(Request $request)
     {
         // Validasi input dari form
@@ -30,8 +33,8 @@ class FormController extends Controller
             'guest_phone' => 'required',
             'guest_address' => 'required',
             'institution' => 'required',
-            'purpose' => 'required', // Menambahkan validasi untuk field 'purpose'
-            'pdf_file' => 'required|file|mimes:pdf|max:2048',
+            'purpose' => 'required',
+            'pdf_file' => 'required|file|mimes:pdf|max:2048', // PDF-only validation with max size
             'category' => 'required',
         ]);
 
@@ -41,7 +44,7 @@ class FormController extends Controller
         $form->guest_phone = $request->guest_phone;
         $form->guest_address = $request->guest_address;
         $form->institution = $request->institution;
-        $form->purpose = $request->purpose; // Mengisi data 'purpose'
+        $form->purpose = $request->purpose;
         $form->category = $request->category;
         $form->invoice_number = $this->generateInvoiceNumber($request->category);
         $form->date = now(); // Menyimpan tanggal otomatis
@@ -52,7 +55,7 @@ class FormController extends Controller
         return redirect()->route('dashboard')->with('success', 'Form berhasil disubmit!');
     }
 
-    // Fungsi untuk menghasilkan nomor invoice berdasarkan kategori
+    // Fungsi untuk menghasilkan nomor invoice berdasarkan kategori yang dipilih
     private function generateInvoiceNumber($category)
     {
         // Mengambil increment number dari id terbesar di database
@@ -60,9 +63,9 @@ class FormController extends Controller
 
         // Menentukan kode kategori berdasarkan kategori yang dipilih
         $categoryCode = match ($category) {
-            'Business' => 'BNS',
-            'Government' => 'GOV',
-            'Enterprise' => 'ENT',
+            'Business' => 'BNS', // Kode untuk kategori Business
+            'Government' => 'GOV', // Kode untuk kategori Government
+            'Enterprise' => 'ENT', // Kode untuk kategori Enterprise
         };
 
         // Menghasilkan nomor invoice dengan format yang diinginkan

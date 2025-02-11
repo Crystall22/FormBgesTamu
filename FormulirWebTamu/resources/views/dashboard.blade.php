@@ -13,12 +13,10 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Date</th>
                 <th>Guest Name</th>
                 <th>Phone</th>
-                <th>Address</th>
                 <th>Institution</th>
-                <th>Date</th>
-                <th>Purpose</th>
                 <th>Category</th>
                 <th>Invoice Number</th>
                 <th>Status</th>
@@ -27,12 +25,10 @@
         <tbody>
             @foreach ($forms as $form)
             <tr>
+                <td>{{ $form->date }}</td>
                 <td>{{ $form->guest_name }}</td>
                 <td>{{ $form->guest_phone }}</td>
-                <td>{{ $form->guest_address }}</td>
                 <td>{{ $form->institution }}</td>
-                <td>{{ $form->date }}</td>
-                <td>{{ $form->purpose }}</td>
                 <td>{{ $form->category }}</td>
                 <td>{{ $form->invoice_number }}</td>
                 <td>
