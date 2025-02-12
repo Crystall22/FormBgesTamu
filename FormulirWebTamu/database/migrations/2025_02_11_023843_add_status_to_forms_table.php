@@ -4,25 +4,29 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+class AddStatusToFormsTable extends Migration
+{
     /**
      * Run the migrations.
+     *
+     * @return void
      */
     public function up()
     {
         Schema::table('forms', function (Blueprint $table) {
-            $table->string('status')->default('under_review');
+            $table->string('status')->nullable(); // 'approved' or 'rejected'
         });
     }
-
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('forms', function (Blueprint $table) {
-            //
+            $table->dropColumn('status');
         });
     }
-};
+}

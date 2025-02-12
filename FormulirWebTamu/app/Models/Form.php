@@ -20,6 +20,7 @@ class Form extends Model
         'category',
         'secretary_note',
         'status',
-        'invoice_number'
+        'invoice_number',
+        'forwarded_to_management'
     ];
 }

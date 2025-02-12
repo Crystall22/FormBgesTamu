@@ -1,13 +1,38 @@
-@foreach ($forms as $form)
-    <div class="form-card">
-        <h3>{{ $form->guest_name }} ({{ $form->category }})</h3>
-        <p>{{ $form->purpose }}</p>
-        <p>Submitted on: {{ $form->created_at }}</p>
+@extends('layouts.app')
 
-        <form action="{{ route('secretary.addNote', $form->id) }}" method="POST">
-            @csrf
-            <textarea name="note" placeholder="Add a note"></textarea>
-            <button type="submit">Forward to Management</button>
-        </form>
+@section('content')
+    <div class="container mt-4">
+        <h2 class="mb-3">Secretary Dashboard</h2>
+
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <table class="table table-striped table-sm table-bordered text-center">
+            <thead class="thead-light">
+                <tr>
+                    <th>Guest Name</th>
+                    <th>Institution</th>
+                    <th>Category</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($forms as $form)
+                    <tr>
+                        <td>{{ $form->guest_name }}</td>
+                        <td>{{ $form->institution }}</td>
+                        <td>{{ $form->category }}</td>
+                        <td>
+                            <a href="{{ route('secretary.form', $form->id) }}" class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-@endforeach
+@endsection
