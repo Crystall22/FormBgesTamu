@@ -32,7 +32,7 @@
                 <td>{{ $form->category }}</td>
                 <td>{{ $form->invoice_number }}</td>
                 <td>
-                    @if ($form->status === 'accepted')
+                    @if ($form->status === 'approved')
                         <span class="badge badge-success">Accepted</span>
                     @elseif ($form->status === 'rejected')
                         <span class="badge badge-danger">Rejected</span>
@@ -40,6 +40,7 @@
                         <span class="badge badge-warning">Under Review</span>
                     @endif
                 </td>
+
             </tr>
             @endforeach
         </tbody>

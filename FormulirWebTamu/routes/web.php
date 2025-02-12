@@ -14,8 +14,6 @@ Route::get('/secretary/form/{id}', [SecretaryController::class, 'showForm'])->na
 Route::post('/secretary/form/{id}', [SecretaryController::class, 'updateForm'])->name('secretary.update');
 Route::get('/secretary/download-pdf/{id}', [SecretaryController::class, 'downloadPdf'])->name('secretary.download.pdf');
 
-Route::prefix('management')->group(function () {
-    Route::get('dashboard', [ManagementController::class, 'dashboard'])->name('management.dashboard');
-    Route::post('approve/{form}', [ManagementController::class, 'approve'])->name('management.approve');
-    Route::post('reject/{form}', [ManagementController::class, 'reject'])->name('management.reject');
-});
+Route::get('/management/dashboard', [ManagementController::class, 'dashboard'])->name('management.dashboard');
+Route::put('/management/approve/{form}', [ManagementController::class, 'approve'])->name('management.approve');
+Route::put('/management/reject/{form}', [ManagementController::class, 'reject'])->name('management.reject');

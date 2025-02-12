@@ -44,7 +44,7 @@
     <div class="banner">
         <img src="{{ asset('images/logotelkom.png') }}" alt="Logo" style="width: 110px; height: auto;">
         <div>
-            <h1 class="mb-0">PT. Telkom Infrastruktur Indonesia</h1>
+            <h1 class="mb-0">PT Telkom Indonesia Tbk - UNIT BGES</h1>
             <p class="lead">Jl. Jend. Sudirman No.459, 20 Ilir D. III, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30129</p>
         </div>
     </div>
