@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-4">
-        <h2 class="mb-3">Secretary Dashboard</h2>
+        <h1 class="mb-3">Secretary Dashboard</h1>
 
         @if (session('success'))
             <div class="alert alert-success">
