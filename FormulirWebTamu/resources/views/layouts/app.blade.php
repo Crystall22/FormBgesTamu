@@ -177,6 +177,13 @@
             <h1>@yield('header')</h1>
             @yield('content')
         </div>
+        <!-- Logout Button -->
+        <div class="d-flex justify-content-end mb-4">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="btn btn-danger">Logout</button>
+            </form>
+        </div>
 
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>

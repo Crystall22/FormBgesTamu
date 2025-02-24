@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+        <!-- Back Button -->
+            <div class="mb-4">
+                <a href="{{ url()->previous() }}"
+                    class="btn btn-lg btn-outline-secondary px-2.4 py-3 rounded-lg shadow-lg transition duration-300
+                    ease-in-out hover:bg-gray-200 hover:text-gray-900">
+                    <i class="fas fa-arrow-left mr-2"></i> Go Back
+                </a>
+            </div>
     <div class="container mt-3">
         <h1 class="mb-4 text-center text-primary">Form Details</h1>
 
