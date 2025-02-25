@@ -21,6 +21,8 @@
             padding: 40px;
             width: 350px;
             box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+            user-select: none;
+
         }
         .login-container h2 {
             text-align: center;
@@ -46,12 +48,34 @@
             padding-bottom: 1%;
 
         }
+        .login-logo-container {
+        position: relative;
+        display: inline-block;
+
+        }
+
+        .logo-img {
+        transition: transform 0.3s ease, opacity 0.3s ease;
+
+        }
+
+        .logo-img:hover {
+        content: url("{{ asset('images/telkom.png') }}");
+        transform: scale(1.1);
+        opacity: 0.8;
+
+        }
+
+        img{
+            user-select: none;
+        }
+
     </style>
 </head>
 <body>
 
     <div class="login-logo-container">
-        <img src="{{ asset('images/telkom.png') }}" alt="Telkom">
+        <img src="{{ asset('images/telkom2.png') }}" alt="Telkom" class="logo-img">
     </div>
 
     <div class="login-container">

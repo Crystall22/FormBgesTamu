@@ -11,24 +11,22 @@ class FormController extends Controller
     {
         return view('receptionist.buatform');
     }
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        $forms = Form::all();
-        return view('dashboard', compact('forms'));
+        return $this->showForms($request);
     }
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'guest_name' => 'required|string',
-            'guest_phone' => 'required|string',
-            'guest_address' => 'required|string',
-            'institution' => 'required|string',
-            'purpose' => 'required|string',
+            'guest_name' => 'required|string|max_digits:75',
+            'guest_phone' => 'required|numeric|between:10,14',
+            'guest_address' => 'required|string|max_digits:200',
+            'institution' => 'required|string|max_digits:100',
+            'purpose' => 'required|string|max_digits:300',
             'category' => 'required|string',
             'pdf_file' => 'required|file|mimes:pdf|max:2048',
         ]);
 
-        // Store the uploaded PDF file and save its path
         if ($request->hasFile('pdf_file')) {
             $pdfPath = $request->file('pdf_file')->store('pdfs', 'public');
         } else {
@@ -45,18 +43,42 @@ class FormController extends Controller
         $form->date = now()->format('Y-m-d');
         $form->pdf_file = $pdfPath; // SavePDF
         $form->save();
+
         return redirect()->route('dashboard')->with('success', 'Form successfully submitted!');
     }
+
+    public function showForms(Request $request)
+    {
+        $searchQuery = $request->input('search');
+        $forms = Form::query();
+        if ($searchQuery) {
+            $forms = $forms->where('guest_name', 'LIKE', '%' . $searchQuery . '%');
+        }
+
+        $forms = $forms->orderBy('created_at', 'desc')->paginate(5);
+
+        // AJAX request, partial view dan pagination
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('partials.tabel', compact('forms'))->render(),
+                'pagination' => (string) $forms->links()
+            ]);
+        }
+
+        return view('dashboard', compact('forms', 'searchQuery'));
+    }
+
     private function generateInvoiceNumber($category)
     {
         // Mengambil increment number dari id terbesar di database
         $incrementNumber = Form::max('id') + 1;
-
         $categoryCode = match ($category) {
             'Business' => 'BNS',
             'Government' => 'GOV',
             'Enterprise' => 'ENT',
         };
-        return 'INV' . $incrementNumber . now()->format('Ymd') . $categoryCode;
+
+        // Generate the invoice number
+        return 'INV' . now()->format('Ymd') . $incrementNumber . $categoryCode;
     }
 }
