@@ -19,8 +19,10 @@ Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware([RoleMiddleware::class . ':receptionist'])->group(function () {
     Route::get('/receptionist/form', [FormController::class, 'create'])->name('form.create');
     Route::post('/receptionist/store', [FormController::class, 'store'])->name('receptionist.store');
-    Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
+
 });
+
+Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware([RoleMiddleware::class . ':secretary'])->group(function () {
     Route::get('/secretary/dashboard', [SecretaryController::class, 'dashboard'])->name('secretary.dashboard');

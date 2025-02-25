@@ -26,20 +26,27 @@
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             }
 
-            h1 {
+            h1{
                 font-size: 2.1rem;
-                color: #325bcc;
+                color: #4d4d4d;
                 font-weight: bold;
                 margin-bottom: 20px;
             }
 
             h2{
                 font-size: 2.1rem;
-                color: #f7f7f7;
+                color: #000000;
                 font-weight: bold;
                 margin-bottom: 20px;
-
             }
+
+            p2{
+                font-size: 2.7rem;
+                color: #4d4d4d;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
+
 
             .form-control {
                 margin-bottom: 15px;
@@ -65,14 +72,14 @@
             }
 
             .btn-secondary {
-                background-color: #6c757d;
-                border-color: #6c757d;
+                background-color: #325bcc;
+                border-color: #325bcc;
                 color: #fff;
                 transition: background-color 0.3s;
             }
 
             .btn-secondary:hover {
-                background-color: #5a6268;
+                background-color: #2b4bb2;
             }
 
             .card {
@@ -89,14 +96,14 @@
             }
 
             .banner {
-                background-color: #325bcc;
+                background-color: #ffffff;
                 color: white;
                 padding: 20px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 box-sizing: border-box;
-                border-bottom: 4px solid #2b4bb2;
+                border-bottom: 4px solid #ffffff;
                 flex-wrap: wrap;
             }
 
@@ -114,8 +121,8 @@
 
             .banner-content p {
                 margin: 0;
-                font-size: 1rem;
-                color: #d9e3ff;
+                font-size: 1.0rem;
+                color: #000000;
             }
 
             .logo-container {
@@ -163,12 +170,12 @@
             <!-- Text Content -->
             <div class="banner-content">
                 <h2 class="mb-0">PT. Telkom Indonesia Tbk. - Unit BGES</h2>
-                <p class="lead">Jl. Jend. Sudirman No.459, 20 Ilir D. III, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30129</p>
+                <p> Jl. Jend. Sudirman No.459, 20 Ilir D. III, Kec. Ilir Tim. I, Kota Palembang, Sumatera Selatan 30129</p>
             </div>
 
             <!-- Logo Container -->
             <div class="logo-container">
-                <img src="{{ asset('images/logotelkom.png') }}" alt="Logo 1">
+                <img src="{{ asset('images/telkom.png') }}" alt="Telkom">
                 <img src="{{ asset('images/bumn.png') }}" alt="BUMN">
             </div>
         </div>

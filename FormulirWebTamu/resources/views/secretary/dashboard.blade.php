@@ -35,4 +35,10 @@
             </tbody>
         </table>
     </div>
+            <div class="text-center mb-4">
+                <a href="{{ route('dashboard') }}" class="btn btn-lg btn-outline-primary px-5 py-3">
+                    Go to Dashboard
+                </a>
+            </div>
+
 @endsection

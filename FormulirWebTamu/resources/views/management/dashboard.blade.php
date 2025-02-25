@@ -27,7 +27,7 @@
     <div class="tab-content" id="managementTabsContent">
         <!-- Under Review Tab -->
         <div class="tab-pane fade show active" id="underReview" role="tabpanel" aria-labelledby="under-review-tab">
-            <h1 class="mb-4 text-primary"><i class="fas fa-file-alt"></i> Forms Under Review</h1>
+            <h3 class="mb-4 text-primary"><i class="fas fa-file-alt"></i> Forms Under Review</h3>
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-bordered">
@@ -50,19 +50,27 @@
                                 <td>{{ $form->institution }}</td>
                                 <td>{{ $form->category }}</td>
                                 <td>{{ $form->note }}</td>
-                                <td>
-                                    <form action="{{ route('management.approve', $form->id) }}" method="POST" class="d-inline">
+                                <td class="d-flex justify-content-center">
+                                    <form action="{{ route('management.approve', $form->id) }}" method="POST" class="mr-1">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                        <button type="submit" class="btn btn-sm btn-success">
+                                            <i class="fas fa-check"></i> Approve
+                                        </button>
                                     </form>
-                                    <form action="{{ route('management.reject', $form->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('management.reject', $form->id) }}" method="POST" class="ml-1">
                                         @csrf
                                         @method('PUT')
-                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-times"></i> Reject
+                                        </button>
                                     </form>
                                 </td>
-                                <td><a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-primary btn-sm"><i class="fas fa-file-pdf"></i> View Pdf</a></td>
+                                <td>
+                                    <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-file-pdf"></i> View Pdf
+                                    </a>
+                                </td>
                             </tr>
                         @empty
                             <tr>

@@ -20,7 +20,7 @@
     <!-- Form -->
     <div class="card shadow-lg">
         <div class="card-body">
-            <h2 class="card-title mb-4 text-primary">Guest Information</h2>
+            <h4 class="card-title mb-4 text-primary">Guest Information</h4>
             <form action="{{ route('receptionist.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
@@ -45,7 +45,7 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="purpose" class="font-weight-bold">Tujuan</label>
+                    <label for="purpose" class="font-weight-bold">Purpose</label>
                     <textarea class="form-control form-control-lg" id="purpose" name="purpose" placeholder="Masukkan tujuan kunjungan" rows="3" required></textarea>
                 </div>
 
@@ -55,7 +55,7 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="category" class="font-weight-bold">Kategori Tujuan</label>
+                    <label for="category" class="font-weight-bold">Category</label>
                     <select class="form-control form-control-lg" id="category" name="category" required>
                         <option value="Business">Business</option>
                         <option value="Government">Government</option>

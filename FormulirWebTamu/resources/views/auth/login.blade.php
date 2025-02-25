@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Login - Formulir Web Tamu</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background: linear-gradient(135deg, #1E3C72, #2A5298);
+            background: linear-gradient(135deg, #30466e, #2A5298);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -39,11 +39,22 @@
         .text-center a:hover {
             text-decoration: underline;
         }
+
+        .login-logo-container {
+            justify-content: center;
+            margin-right: 13px;
+            padding-bottom: 1%;
+
+        }
     </style>
 </head>
 <body>
 
-<div class="login-container">
+    <div class="login-logo-container">
+        <img src="{{ asset('images/telkom.png') }}" alt="Telkom">
+    </div>
+
+    <div class="login-container">
     <h2>Login</h2>
     @if(session('error'))
         <div class="alert alert-danger">
