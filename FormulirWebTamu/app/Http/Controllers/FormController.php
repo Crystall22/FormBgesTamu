@@ -18,12 +18,12 @@ class FormController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'guest_name' => 'required|string|max_digits:75',
-            'guest_phone' => 'required|numeric|between:10,14',
-            'guest_address' => 'required|string|max_digits:200',
-            'institution' => 'required|string|max_digits:100',
-            'purpose' => 'required|string|max_digits:300',
-            'category' => 'required|string',
+            'guest_name' => 'required|string|max:75',
+            'guest_phone' => 'required|numeric|digits_between:10,14',
+            'guest_address' => 'required|string|max:200',
+            'institution' => 'required|string|max:100',
+            'purpose' => 'required|string|max:300',
+            'taken' => 'required|string',
             'pdf_file' => 'required|file|mimes:pdf|max:2048',
         ]);
 
@@ -33,26 +33,28 @@ class FormController extends Controller
             return redirect()->back()->with('error', 'PDF file upload failed.');
         }
         $form = new Form();
-        $form->guest_name = $request->guest_name;
-        $form->guest_phone = $request->guest_phone;
-        $form->guest_address = $request->guest_address;
-        $form->institution = $request->institution;
-        $form->purpose = $request->purpose;
-        $form->category = $request->category;
-        $form->invoice_number = $this->generateInvoiceNumber($request->category);
+        $form->guest_name = $request['guest_name'];
+        $form->guest_phone = $request['guest_phone'];
+        $form->guest_address = $request['guest_address'];
+        $form->institution = $request['institution'];
+        $form->purpose = $request['purpose'];
+        $form->taken = $request['taken'];
+        $form->invoice_number = $this->generateInvoiceNumber($request['taken']);
         $form->date = now()->format('Y-m-d');
         $form->pdf_file = $pdfPath; // SavePDF
         $form->save();
 
         return redirect()->route('dashboard')->with('success', 'Form successfully submitted!');
+
     }
 
     public function showForms(Request $request)
     {
         $searchQuery = $request->input('search');
         $forms = Form::query();
+
         if ($searchQuery) {
-            $forms = $forms->where('guest_name', 'LIKE', '%' . $searchQuery . '%');
+            $forms = $forms->where('guest_name', 'LIKE', '%' . $searchQuery . '%')->orWhere('taken', 'LIKE', '%' . $searchQuery . '%');
         }
 
         $forms = $forms->orderBy('created_at', 'desc')->paginate(5);
@@ -68,17 +70,45 @@ class FormController extends Controller
         return view('dashboard', compact('forms', 'searchQuery'));
     }
 
-    private function generateInvoiceNumber($category)
+    public function deleteScreen(Request $request)
+    {
+        $searchQuery = $request->input('search');
+
+        $forms = Form::query()
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('guest_name', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        // Check if the request is AJAX
+        if ($request->ajax()) {
+            $html = view('partials.delete-tabel', compact('forms'))->render();
+            return response()->json(['html' => $html]);
+        }
+
+        return view('receptionist.deleteform', compact('forms'));
+    }
+
+
+    public function destroy($id)
+    {
+        $form = Form::findOrFail($id);
+        $form->delete();
+
+        return redirect()->route('form.deleteScreen')->with('success', 'Form successfully deleted.');
+    }
+    private function generateInvoiceNumber($taken)
     {
         // Mengambil increment number dari id terbesar di database
         $incrementNumber = Form::max('id') + 1;
-        $categoryCode = match ($category) {
-            'Business' => 'BNS',
-            'Government' => 'GOV',
-            'Enterprise' => 'ENT',
+        $takenCode = match ($taken) {
+            'Sule' => 'SUL',
+            'Ardi' => 'ARD',
+            'Hutri' => 'HUT',
         };
 
         // Generate the invoice number
-        return 'INV' . now()->format('Ymd') . $incrementNumber . $categoryCode;
+        return 'INV' . now()->format('Ymd') . $incrementNumber . $takenCode;
     }
 }

@@ -32,11 +32,11 @@
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-bordered">
                     <thead class="thead-dark">
-                        <tr>
+                        <tr class="text-center">
                             <th>Guest Name</th>
                             <th>Phone</th>
                             <th>Institution</th>
-                            <th>Category</th>
+                            <th>Taken</th>
                             <th>Note</th>
                             <th>Actions</th>
                             <th>PDF</th>
@@ -44,11 +44,11 @@
                     </thead>
                     <tbody>
                         @forelse($formsUnderReview as $form)
-                            <tr>
+                            <tr class="align-middle text-center">
                                 <td>{{ $form->guest_name }}</td>
                                 <td>{{ $form->guest_phone }}</td>
                                 <td>{{ $form->institution }}</td>
-                                <td>{{ $form->category }}</td>
+                                <td>{{ $form->taken }}</td>
                                 <td>{{ $form->note }}</td>
                                 <td class="d-flex justify-content-center">
                                     <form action="{{ route('management.approve', $form->id) }}" method="POST" class="mr-1">
@@ -89,22 +89,22 @@
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-bordered">
                     <thead class="thead-dark">
-                        <tr>
+                        <tr class="text-center">
                             <th>Guest Name</th>
                             <th>Phone</th>
                             <th>Institution</th>
-                            <th>Category</th>
+                            <th>Taken</th>
                             <th>Invoice Number</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($formsHistory as $form)
-                            <tr>
+                            <tr class="align-middle text-center">
                                 <td>{{ $form->guest_name }}</td>
                                 <td>{{ $form->guest_phone }}</td>
                                 <td>{{ $form->institution }}</td>
-                                <td>{{ $form->category }}</td>
+                                <td>{{ $form->taken }}</td>
                                 <td>{{ $form->invoice_number }}</td>
                                 <td>
                                     @if ($form->status === 'approved')
@@ -124,5 +124,4 @@
             </div>
         </div>
     </div>
-
 @endsection

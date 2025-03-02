@@ -9,20 +9,18 @@ use App\Http\Middleware\RoleMiddleware;
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
-
+Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
 Route::get('login', [LoginController::class, 'loginForm'])->name('login')->middleware('guest');
 Route::post('login', [LoginController::class, 'authenticate']);
 Route::post('logout', [LoginController::class, 'logout'])->name('logout');
-
+Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware([RoleMiddleware::class . ':receptionist'])->group(function () {
-    Route::get('/receptionist/form', [FormController::class, 'create'])->name('form.create');
     Route::post('/receptionist/store', [FormController::class, 'store'])->name('receptionist.store');
-
+    Route::get('/receptionist/form', [FormController::class, 'create'])->name('form.create');
+    Route::get('/receptionist/deleteform', [FormController::class, 'deleteScreen'])->name('form.deleteScreen');
+    Route::delete('/form/{id}', [FormController::class, 'destroy'])->name('form.destroy');
 });
-
-Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
 
 Route::middleware([RoleMiddleware::class . ':secretary'])->group(function () {
     Route::get('/secretary/dashboard', [SecretaryController::class, 'dashboard'])->name('secretary.dashboard');
@@ -35,8 +33,5 @@ Route::middleware([RoleMiddleware::class . ':management'])->group(function () {
     Route::get('/management/dashboard', [ManagementController::class, 'dashboard'])->name('management.dashboard');
     Route::put('/management/approve/{form}', [ManagementController::class, 'approve'])->name('management.approve');
     Route::put('/management/reject/{form}', [ManagementController::class, 'reject'])->name('management.reject');
+
 });
-
-
-// Receptionist routes
-

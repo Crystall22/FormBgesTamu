@@ -15,7 +15,7 @@
                 <tr>
                     <th>Guest Name</th>
                     <th>Institution</th>
-                    <th>Category</th>
+                    <th>Taken By</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -24,7 +24,7 @@
                     <tr>
                         <td>{{ $form->guest_name }}</td>
                         <td>{{ $form->institution }}</td>
-                        <td>{{ $form->category }}</td>
+                        <td>{{ $form->taken }}</td>
                         <td>
                             <a href="{{ route('secretary.form', $form->id) }}" class="btn btn-sm btn-outline-primary">
                                 View
