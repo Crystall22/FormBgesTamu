@@ -34,25 +34,26 @@
                 <!-- Guest Name -->
                 <div class="form-group mb-4">
                     <label for="guest_name" class="font-weight-bold">Guest Name</label>
-                    <input type="text" class="form-control form-control-lg" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" required>
+                    <input type="text" class="form-control form-control-lg" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" maxlength="75" required>
                 </div>
 
                 <!-- Phone Number -->
                 <div class="form-group mb-4">
                     <label for="guest_phone" class="font-weight-bold">Phone Number</label>
-                    <input type="text" class="form-control form-control-lg" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" required>
+                    <input type="tel" class="form-control form-control-lg" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" maxlength="14"
+                    pattern="[0-9]{10,14}" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                 </div>
 
                 <!-- Guest Address -->
                 <div class="form-group mb-4">
                     <label for="guest_address" class="font-weight-bold">Guest Address</label>
-                    <input type="text" class="form-control form-control-lg" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" required>
+                    <input type="text" class="form-control form-control-lg" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" maxlength="200" required>
                 </div>
 
                 <!-- Institution -->
                 <div class="form-group mb-4">
                     <label for="institution" class="font-weight-bold">Institution</label>
-                    <input type="text" class="form-control form-control-lg" id="institution" name="institution" placeholder="Masukkan Institusi Anda" required>
+                    <input type="text" class="form-control form-control-lg" id="institution" name="institution" placeholder="Masukkan Institusi Anda" maxlength="100" required>
                 </div>
 
                 <!-- Purpose -->
