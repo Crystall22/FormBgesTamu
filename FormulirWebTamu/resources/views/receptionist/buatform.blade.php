@@ -2,6 +2,31 @@
 
 @section('content')
 <div class="container mt-4">
+    <nav class="navbar navbar-expand-lg navbar-light mb-4">
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="{{ route('dashboard') }}" class="nav-link">
+                        Go to Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('form.deleteScreen') }}" class="nav-link">
+                        Go to Delete Form
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <!-- Header Banner -->
     {{-- Uncomment this if you want to display a banner
     <div class="jumbotron bg-primary text-white text-center py-5 mb-4">
@@ -14,15 +39,6 @@
         color: #b61c0f;
     }
     </style>
-    <!-- Go to Dashboard Button -->
-    <div class="text-center mb-4">
-        <a href="{{ route('dashboard') }}" class="btn btn-lg btn-outline-danger px-5 py-3">
-            Go to Dashboard
-        </a>
-        <a href="{{ route('form.deleteScreen') }}" class="btn btn-lg btn-outline-danger px-5 py-3">
-            Go to Delete
-        </a>
-    </div>
 
     <!-- Form -->
     <div class="card shadow-lg">

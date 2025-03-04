@@ -22,21 +22,39 @@
                     <td class="border px-4 py-2">{{ $form->invoice_number }}</td>
                     <td class="border px-4 py-2">
                         @if ($form->status === 'approved')
-                        <span class="badge badge-success">Accepted</span>
-                    @elseif ($form->status === 'rejected')
-                        <span class="badge badge-danger">Rejected</span>
-                    @else
-                        <span class="badge badge-warning">Under Review</span>
-                    @endif
+                            <span class="badge badge-success">Accepted</span>
+                        @elseif ($form->status === 'rejected')
+                            <span class="badge badge-danger">Rejected</span>
+                        @else
+                            <span class="badge badge-warning">Under Review</span>
+                        @endif
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 </div>
+
 <!-- Pagination -->
-@if($forms->hasPages())
-    <div class="mt-4">
-        {{ $forms->links() }}
-    </div>
-@endif
+<div class="pagination">
+    {{-- Previous Page Link --}}
+    @if ($forms->onFirstPage())
+      <a class="disabled" href="#">&laquo;</a>
+    @else
+      <a href="{{ $forms->previousPageUrl() }}">&laquo;</a>
+    @endif
+
+    {{-- Pagination Links --}}
+    @for ($i = 1; $i <= $forms->lastPage(); $i++)
+      <a href="{{ $forms->url($i) }}" class="{{ ($forms->currentPage() == $i) ? 'active' : '' }}">
+        {{ $i }}
+      </a>
+    @endfor
+
+    {{-- Next Page Link --}}
+    @if ($forms->hasMorePages())
+      <a href="{{ $forms->nextPageUrl() }}">&raquo;</a>
+    @else
+      <a class="disabled" href="#">&raquo;</a>
+    @endif
+  </div>

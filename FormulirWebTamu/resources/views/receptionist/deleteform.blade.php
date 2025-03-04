@@ -3,72 +3,99 @@
 @section('header', '')
 
 @section('content')
-    <div class="py-12">
-        <div class="mb-4 d-flex justify-between align-items-center">
-            <p2 class="text-lg font-semibold">
-                Delete Forms
-            </p2>
-            <div class="ml-auto">
-                <a href="{{ url()->previous() }}"
-                    class="btn btn-lg btn-outline-secondary px-2 py-1 rounded-lg transition duration-300
-                    ease-in-out hover:bg-gray-200 hover:text-gray-900">
-                    <i class="fas fa-arrow-left mr-2"></i> Go Back
-                </a>
+<div class="container mt-4">
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <p2 class="text-lg font-semibold">
+            Delete Forms
+        </p2>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link">
+                            Go to Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('form.create') }}" class="nav-link">
+                            Go to Create Form
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </div>
+        </nav>
+    </div>
 
-        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-            <div class="p-6 bg-white border-b border-gray-200">
+    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+        <div class="p-6 bg-white border-b border-gray-200">
+            <!-- Search Bar -->
+            <div class="mb-4">
+                <input type="text" id="search-input" placeholder="Cari Nama Tamu" class="form-control" autocomplete="off">
+            </div>
 
-                <!-- Search Bar -->
-                <div class="mb-4">
-                    <input type="text" id="search-input" placeholder="Cari Nama Tamu"
-                        class="form-control" autocomplete="off">
-                </div>
+            <!-- Table with Responsive Scroll -->
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Guest Name</th>
+                            <th>Institution</th>
+                            <th>Taken By</th>
+                            <th>Invoice Number</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="form-list">
+                        @include('partials.delete-tabel', ['forms' => $forms])
+                    </tbody>
+                </table>
+            </div>
 
-                <!-- Table with Responsive Scroll -->
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Guest Name</th>
-                                <th>Institution</th>
-                                <th>Taken By</th>
-                                <th>Invoice Number</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="form-list">
-                            @include('partials.delete-tabel', ['forms' => $forms])
-                        </tbody>
-                    </table>
-                </div>
+            <!-- Pagination -->
+            <div class="pagination">
+                {{-- Previous Page Link --}}
+                @if ($forms->onFirstPage())
+                    <a class="disabled" href="#">&laquo;</a>
+                @else
+                    <a href="{{ $forms->previousPageUrl() }}">&laquo;</a>
+                @endif
 
-                <!-- Pagination -->
-                @if($forms->hasPages())
-                    <div class="mt-4">
-                        {{ $forms->links() }}
-                    </div>
+                {{-- Pagination Links --}}
+                @for ($i = 1; $i <= $forms->lastPage(); $i++)
+                    <a href="{{ $forms->url($i) }}" class="{{ ($forms->currentPage() == $i) ? 'active' : '' }}">
+                        {{ $i }}
+                    </a>
+                @endfor
+
+                {{-- Next Page Link --}}
+                @if ($forms->hasMorePages())
+                    <a href="{{ $forms->nextPageUrl() }}">&raquo;</a>
+                @else
+                    <a class="disabled" href="#">&raquo;</a>
                 @endif
             </div>
         </div>
     </div>
+</div>
 
-    <!-- JavaScript for Real-Time Search -->
-    <script>
-        document.getElementById('search-input').addEventListener('input', function() {
-            let searchQuery = this.value;
+<!-- JavaScript for Real-Time Search -->
+<script>
+    document.getElementById('search-input').addEventListener('input', function() {
+        let searchQuery = this.value;
 
-            fetch(`{{ route('form.deleteScreen') }}?search=${searchQuery}`, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('form-list').innerHTML = data.html;
-            });
+        fetch(`{{ route('form.deleteScreen') }}?search=${searchQuery}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('form-list').innerHTML = data.html;
         });
-    </script>
+    });
+</script>
 @endsection

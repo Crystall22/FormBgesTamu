@@ -54,21 +54,22 @@ class FormController extends Controller
         $forms = Form::query();
 
         if ($searchQuery) {
-            $forms = $forms->where('guest_name', 'LIKE', '%' . $searchQuery . '%')->orWhere('taken', 'LIKE', '%' . $searchQuery . '%');
+            $forms = $forms->where('guest_name', 'LIKE', '%' . $searchQuery . '%')
+                ->orWhere('taken', 'LIKE', '%' . $searchQuery . '%');
         }
 
         $forms = $forms->orderBy('created_at', 'desc')->paginate(5);
 
-        // AJAX request, partial view dan pagination
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('partials.tabel', compact('forms'))->render(),
-                'pagination' => (string) $forms->links()
+                'pagination' => (string) $forms->appends($request->query())->links()
             ]);
         }
 
         return view('dashboard', compact('forms', 'searchQuery'));
     }
+
 
     public function deleteScreen(Request $request)
     {
