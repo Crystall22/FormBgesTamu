@@ -33,9 +33,18 @@
         <div class="p-6 bg-white border-b border-gray-200">
             <!-- Search Bar -->
             <div class="mb-4">
-                <input type="text" id="search-input" placeholder="Cari Nama Tamu" class="form-control" autocomplete="off">
+                <input type="text" id="search-input" maxlength="20 placeholder="Cari Nama Tamu" class="form-control" autocomplete="off" value="{{ $searchQuery ?? '' }}">
             </div>
 
+            <!-- Sorter Buttons -->
+            <div class="mb-4">
+                <a href="?sort=asc" class="btn btn-sm btn-primary {{ request('sort') == 'asc' ? 'active' : '' }}">
+                    Sort Oldest First
+                </a>
+                <a href="?sort=desc" class="btn btn-sm btn-primary {{ request('sort') == 'desc' ? 'active' : '' }}">
+                    Sort Newest First
+                </a>
+            </div>
             <!-- Table with Responsive Scroll -->
             <div class="table-responsive">
                 <table class="table">
@@ -86,8 +95,9 @@
 <script>
     document.getElementById('search-input').addEventListener('input', function() {
         let searchQuery = this.value;
+        let sortQuery = new URLSearchParams(window.location.search).get('sort') || 'desc';
 
-        fetch(`{{ route('form.deleteScreen') }}?search=${searchQuery}`, {
+        fetch(`{{ route('form.deleteScreen') }}?search=${searchQuery}&sort=${sortQuery}`, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }

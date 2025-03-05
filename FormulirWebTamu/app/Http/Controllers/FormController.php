@@ -26,7 +26,6 @@ class FormController extends Controller
             'taken' => 'required|string',
             'pdf_file' => 'required|file|mimes:pdf|max:2048',
         ]);
-
         if ($request->hasFile('pdf_file')) {
             $pdfPath = $request->file('pdf_file')->store('pdfs', 'public');
         } else {
@@ -45,52 +44,56 @@ class FormController extends Controller
         $form->save();
 
         return redirect()->route('dashboard')->with('success', 'Form successfully submitted!');
-
     }
 
     public function showForms(Request $request)
     {
         $searchQuery = $request->input('search');
-        $forms = Form::query();
+        $sortOrder = $request->input('sort', 'desc');
 
-        if ($searchQuery) {
-            $forms = $forms->where('guest_name', 'LIKE', '%' . $searchQuery . '%')
-                ->orWhere('taken', 'LIKE', '%' . $searchQuery . '%');
-        }
-
-        $forms = $forms->orderBy('created_at', 'desc')->paginate(5);
+        $forms = Form::query()
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('guest_name', 'like', "%{$searchQuery}%")
+                    ->orWhere('taken', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('created_at', $sortOrder)
+            ->paginate(5)
+            ->appends(['search' => $searchQuery, 'sort' => $sortOrder]);
 
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('partials.tabel', compact('forms'))->render(),
-                'pagination' => (string) $forms->appends($request->query())->links()
+                'pagination' => (string) $forms->links(),
             ]);
         }
 
-        return view('dashboard', compact('forms', 'searchQuery'));
+        return view('dashboard', compact('forms', 'searchQuery', 'sortOrder'));
     }
-
 
     public function deleteScreen(Request $request)
     {
         $searchQuery = $request->input('search');
+        $sortOrder = $request->input('sort', 'desc');
 
         $forms = Form::query()
             ->when($searchQuery, function ($query) use ($searchQuery) {
-                $query->where('guest_name', 'like', "%{$searchQuery}%");
+                $query->where('guest_name', 'like', "%{$searchQuery}%")
+                    ->orWhere('taken', 'like', "%{$searchQuery}%");
             })
-            ->orderBy('created_at', 'desc')
-            ->paginate(5);
+            ->orderBy('created_at', $sortOrder)
+            ->paginate(5)
+            ->appends(['search' => $searchQuery, 'sort' => $sortOrder]);
 
         // Check if the request is AJAX
         if ($request->ajax()) {
-            $html = view('partials.delete-tabel', compact('forms'))->render();
-            return response()->json(['html' => $html]);
+            return response()->json([
+                'html' => view('partials.delete-tabel', compact('forms'))->render(),
+                'pagination' => (string) $forms->links(),
+            ]);
         }
 
-        return view('receptionist.deleteform', compact('forms'));
+        return view('receptionist.deleteform', compact('forms', 'searchQuery', 'sortOrder'));
     }
-
 
     public function destroy($id)
     {

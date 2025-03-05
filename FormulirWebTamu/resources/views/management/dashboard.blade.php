@@ -10,24 +10,31 @@
         </div>
     @endif
 
-    <!-- Tab Navigation -->
-    <ul class="nav nav-tabs mb-4" id="managementTabs" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="under-review-tab" data-toggle="tab" href="#underReview" role="tab" aria-controls="underReview" aria-selected="true">
-                <i class="fas fa-tasks"></i> Under Review
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">
-                <i class="fas fa-history"></i> History
-            </a>
-        </li>
-    </ul>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <!-- Tab Navigation -->
+        <ul class="nav nav-tabs" id="managementTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="under-review-tab" data-toggle="tab" href="#underReview" role="tab" aria-controls="underReview" aria-selected="true">
+                    <i class="fas fa-tasks"></i> Under Review
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="history-tab" data-toggle="tab" href="#history" role="tab" aria-controls="history" aria-selected="false">
+                    <i class="fas fa-history"></i> History
+                </a>
+            </li>
+        </ul>
+
+        <!-- Dashboard Button -->
+        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-primary">
+            Dashboard
+        </a>
+    </div>
 
     <div class="tab-content" id="managementTabsContent">
         <!-- Under Review Tab -->
         <div class="tab-pane fade show active" id="underReview" role="tabpanel" aria-labelledby="under-review-tab">
-            <h3 class="mb-4 text-primary"><i class="fas fa-file-alt"></i> Forms Under Review</h3>
+            <h3 class="mb-4 text-danger"><i class="fas fa-file-alt"></i> Forms Under Review</h3> <!-- Made this text red -->
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-bordered">
@@ -84,7 +91,7 @@
 
         <!-- History Tab -->
         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-            <h3 class="mb-4 text-primary"><i class="fas fa-history"></i> History of Accepted and Rejected Forms</h3>
+            <h3 class="mb-4 text-danger"><i class="fas fa-history"></i> History of Accepted and Rejected Forms</h3> <!-- Made this text red -->
 
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-bordered">

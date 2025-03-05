@@ -35,26 +35,4 @@
     </table>
 </div>
 
-<!-- Pagination -->
-<div class="pagination">
-    {{-- Previous Page Link --}}
-    @if ($forms->onFirstPage())
-      <a class="disabled" href="#">&laquo;</a>
-    @else
-      <a href="{{ $forms->previousPageUrl() }}">&laquo;</a>
-    @endif
 
-    {{-- Pagination Links --}}
-    @for ($i = 1; $i <= $forms->lastPage(); $i++)
-      <a href="{{ $forms->url($i) }}" class="{{ ($forms->currentPage() == $i) ? 'active' : '' }}">
-        {{ $i }}
-      </a>
-    @endfor
-
-    {{-- Next Page Link --}}
-    @if ($forms->hasMorePages())
-      <a href="{{ $forms->nextPageUrl() }}">&raquo;</a>
-    @else
-      <a class="disabled" href="#">&raquo;</a>
-    @endif
-  </div>
