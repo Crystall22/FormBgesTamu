@@ -3,7 +3,6 @@
 @section('header', 'Management Dashboard')
 
 @section('content')
-
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
@@ -34,11 +33,11 @@
     <div class="tab-content" id="managementTabsContent">
         <!-- Under Review Tab -->
         <div class="tab-pane fade show active" id="underReview" role="tabpanel" aria-labelledby="under-review-tab">
-            <h3 class="mb-4 text-danger"><i class="fas fa-file-alt"></i> Forms Under Review</h3> <!-- Made this text red -->
+            <h3 class="mb-4 text"><i class="fas fa-file-alt"></i> Forms Under Review</h3>
 
             <div class="table-responsive">
-                <table class="table table-striped table-hover table-bordered">
-                    <thead class="thead-dark">
+                <table class="table table-dark table-hover table-bordered">
+                    <thead>
                         <tr class="text-center">
                             <th>Guest Name</th>
                             <th>Phone</th>
@@ -51,7 +50,7 @@
                     </thead>
                     <tbody>
                         @forelse($formsUnderReview as $form)
-                            <tr class="align-middle text-center">
+                            <tr class="text-center">
                                 <td>{{ $form->guest_name }}</td>
                                 <td>{{ $form->guest_phone }}</td>
                                 <td>{{ $form->institution }}</td>
@@ -91,11 +90,11 @@
 
         <!-- History Tab -->
         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-            <h3 class="mb-4 text-danger"><i class="fas fa-history"></i> History of Accepted and Rejected Forms</h3> <!-- Made this text red -->
+            <h3 class="mb-4 text"><i class="fas fa-history"></i> History of Accepted and Rejected Forms</h3>
 
             <div class="table-responsive">
-                <table class="table table-striped table-hover table-bordered">
-                    <thead class="thead-dark">
+                <table class="table table-dark table-hover table-bordered">
+                    <thead>
                         <tr class="text-center">
                             <th>Guest Name</th>
                             <th>Phone</th>
@@ -107,7 +106,7 @@
                     </thead>
                     <tbody>
                         @forelse($formsHistory as $form)
-                            <tr class="align-middle text-center">
+                            <tr class="text-center">
                                 <td>{{ $form->guest_name }}</td>
                                 <td>{{ $form->guest_phone }}</td>
                                 <td>{{ $form->institution }}</td>

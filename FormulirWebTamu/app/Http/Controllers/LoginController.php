@@ -18,6 +18,7 @@ class LoginController extends Controller
             'receptionist' => ['username' => 'receptionist', 'password' => 'reception123'],
             'secretary' => ['username' => 'secretary', 'password' => 'secretary123'],
             'management' => ['username' => 'management', 'password' => 'management123'],
+            'security' => ['username' => 'security', 'password' => 'security123'], // New security credentials
         ];
 
         $input = $request->validate([
@@ -49,6 +50,14 @@ class LoginController extends Controller
         ) {
             Session::put('role', 'management');
             return redirect()->route('management.dashboard')->with('success', 'Welcome Management!');
+        }
+
+        if (
+            $input['username'] === $credentials['security']['username'] &&
+            $input['password'] === $credentials['security']['password']
+        ) {
+            Session::put('role', 'security'); // Set session role for security
+            return redirect()->route('parkings.index')->with('success', 'Welcome Security!');
         }
 
         return back()->with('error', 'Invalid credentials.');

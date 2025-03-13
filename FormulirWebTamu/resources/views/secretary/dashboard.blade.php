@@ -1,17 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mt-4">
-        <h1 class="mb-3">Secretary Dashboard</h1>
-
-        @if (session('success'))
+    @if (session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
-        @endif
-
+    @endif
+    <div class="container mt-4">
+        <h1 class="mb-3">Secretary Dashboard</h1>
         <table class="table table-striped table-sm table-bordered text-center">
-            <thead class="thead-light">
+            <thead class="thead">
                 <tr>
                     <th>Guest Name</th>
                     <th>Institution</th>
@@ -36,7 +34,7 @@
         </table>
     </div>
             <div class="text-center mb-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-lg btn-outline-primary px-5 py-3">
+                <a href="{{ route('dashboard') }}" class="btn btn-lg btn-outline-danger px-5 py-3">
                     Go to Dashboard
                 </a>
             </div>

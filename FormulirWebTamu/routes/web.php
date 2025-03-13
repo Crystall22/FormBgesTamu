@@ -5,6 +5,7 @@ use App\Http\Controllers\SecretaryController;
 use App\Http\Controllers\ManagementController;
 use App\Http\Controllers\FormController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\ParkingController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -34,4 +35,14 @@ Route::middleware([RoleMiddleware::class . ':management'])->group(function () {
     Route::put('/management/approve/{form}', [ManagementController::class, 'approve'])->name('management.approve');
     Route::put('/management/reject/{form}', [ManagementController::class, 'reject'])->name('management.reject');
 
+});
+
+Route::middleware([RoleMiddleware::class . ':security'])->group(function () {
+    Route::get('/security/parkings', [ParkingController::class, 'index'])->name('parkings.index');
+    Route::get('/security/parkings/create', [ParkingController::class, 'create'])->name('parkings.create');
+    Route::post('/security/parkings', [ParkingController::class, 'store'])->name('parkings.store');
+    Route::get('/security/parkings/{id}/edit', [ParkingController::class, 'edit'])->name('parkings.edit');
+    Route::put('/security/parkings/{id}', [ParkingController::class, 'update'])->name('parkings.update');
+    Route::get('/security/parkings/deletef', [ParkingController::class, 'deleteScreen'])->name('parkings.deleteScreen');
+    Route::delete('/security/parkings/{id}', [ParkingController::class, 'destroy'])->name('parkings.destroy');
 });
