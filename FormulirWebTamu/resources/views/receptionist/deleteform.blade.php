@@ -4,12 +4,12 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="mb-4 d-flex justify-content-between align-items-center">
-        <p2 class="text-lg font-semibold">
+    <div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <h2 class="text-lg font-semibold mb-2 mb-md-0">
             Delete Forms
-        </p2>
+        </h2>
         <nav class="navbar navbar-expand-lg navbar-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -29,27 +29,26 @@
         </nav>
     </div>
 
-    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-        <div class="p-6 bg-white border-b border-gray-200">
-            <!-- Search Bar -->
-            <div class="mb-4">
-                <input type="text" id="search-input" maxlength="20 placeholder="Cari Nama Tamu" class="form-control" autocomplete="off" value="{{ $searchQuery ?? '' }}">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <!-- Search Bar and Sorter -->
+            <div class="mb-4 d-flex flex-column flex-md-row gap-3 align-items-center">
+                <div class="flex-grow-1 w-100">
+                    <input type="text" id="search-input" placeholder="Cari Nama Tamu" class="form-control form-control-lg" autocomplete="off" maxlength="20" value="{{ $searchQuery ?? '' }}" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+                </div>
+                <div class="sorter-container">
+                    <select id="sort-select" class="form-control form-control-lg sorter-select">
+                        <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Newest First</option>
+                        <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Oldest First</option>
+                    </select>
+                </div>
             </div>
 
-            <!-- Sorter Buttons -->
-            <div class="mb-4">
-                <a href="?sort=asc" class="btn btn-sm btn-primary {{ request('sort') == 'asc' ? 'active' : '' }}">
-                    Sort Oldest First
-                </a>
-                <a href="?sort=desc" class="btn btn-sm btn-primary {{ request('sort') == 'desc' ? 'active' : '' }}">
-                    Sort Newest First
-                </a>
-            </div>
-            <!-- Table with Responsive Scroll -->
-            <div class="table-responsive">
-                <table class="table">
+            <!-- Custom Table -->
+            <div class="table-container mb-4">
+                <table class="custom-table">
                     <thead>
-                        <tr>
+                        <tr class="custom-table-header">
                             <th>Date</th>
                             <th>Guest Name</th>
                             <th>Institution</th>
@@ -65,26 +64,23 @@
             </div>
 
             <!-- Pagination -->
-            <div class="pagination">
-                {{-- Previous Page Link --}}
+            <div class="pagination d-flex justify-content-center flex-wrap gap-2">
                 @if ($forms->onFirstPage())
-                    <a class="disabled" href="#">&laquo;</a>
+                    <a class="btn btn-primary btn-sm disabled" href="#">«</a>
                 @else
-                    <a href="{{ $forms->previousPageUrl() }}">&laquo;</a>
+                    <a href="{{ $forms->previousPageUrl() }}" class="btn btn-primary btn-sm">«</a>
                 @endif
 
-                {{-- Pagination Links --}}
                 @for ($i = 1; $i <= $forms->lastPage(); $i++)
-                    <a href="{{ $forms->url($i) }}" class="{{ ($forms->currentPage() == $i) ? 'active' : '' }}">
+                    <a href="{{ $forms->url($i) }}" class="btn btn-primary btn-sm {{ ($forms->currentPage() == $i) ? 'active' : '' }}">
                         {{ $i }}
                     </a>
                 @endfor
 
-                {{-- Next Page Link --}}
                 @if ($forms->hasMorePages())
-                    <a href="{{ $forms->nextPageUrl() }}">&raquo;</a>
+                    <a href="{{ $forms->nextPageUrl() }}" class="btn btn-primary btn-sm">»</a>
                 @else
-                    <a class="disabled" href="#">&raquo;</a>
+                    <a class="btn btn-primary btn-sm disabled" href="#">»</a>
                 @endif
             </div>
         </div>
@@ -106,6 +102,14 @@
         .then(data => {
             document.getElementById('form-list').innerHTML = data.html;
         });
+    });
+
+    // Add event listener for sort select
+    document.getElementById('sort-select').addEventListener('change', function() {
+        let sortQuery = this.value;
+        let searchQuery = document.getElementById('search-input').value;
+
+        window.location.href = `{{ route('form.deleteScreen') }}?search=${searchQuery}&sort=${sortQuery}`;
     });
 </script>
 @endsection

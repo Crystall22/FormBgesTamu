@@ -2,92 +2,84 @@
 
 @section('content')
 <div class="container mt-4">
-    <nav class="navbar navbar-expand-lg navbar-light mb-4">
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+    @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+    <div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <h2 class="text-lg font-semibold mb-2 mb-md-0">Guest Information</h2>
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="{{ route('dashboard') }}" class="nav-link">Go to Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('form.deleteScreen') }}" class="nav-link">Go to Delete Form</a>
+                    </li>
+                </ul>
             </div>
-        @endif
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a href="{{ route('dashboard') }}" class="nav-link">
-                        Go to Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('form.deleteScreen') }}" class="nav-link">
-                        Go to Delete Form
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <!-- Header Banner -->
-    {{-- Uncomment this if you want to display a banner
-    <div class="jumbotron bg-primary text-white text-center py-5 mb-4">
-        <h1 class="display-4">Create Guest Form</h1>
-        <p class="lead">Fill in the form to register a guest for the meeting.</p>
+        </nav>
     </div>
-    --}}
-    <style>
-    h4{
-        color: #b61c0f;
-    }
-    </style>
 
     <!-- Form -->
     <div class="card shadow-lg">
-        <div class="card-body">
-            <h4 class="card-title mb-4">Guest Information</h4>
+        <div class="card-body p-4">
             <form action="{{ route('receptionist.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Guest Name -->
                 <div class="form-group mb-4">
-                    <label for="guest_name" class="font-weight-bold">Guest Name</label>
-                    <input type="text" class="form-control form-control-lg" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" maxlength="75" required>
+                    <label for="guest_name" class="form-label">Guest Name</label>
+                    <input type="text" class="form-control form-control-lg custom-input" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" maxlength="75" required>
                 </div>
 
                 <!-- Phone Number -->
                 <div class="form-group mb-4">
-                    <label for="guest_phone" class="font-weight-bold">Phone Number</label>
-                    <input type="tel" class="form-control form-control-lg" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" maxlength="14"
-                    pattern="[0-9]{10,14}" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                    <label for="guest_phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control form-control-lg custom-input" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" maxlength="14" pattern="[0-9]{10,14}" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
                 </div>
 
                 <!-- Guest Address -->
                 <div class="form-group mb-4">
-                    <label for="guest_address" class="font-weight-bold">Guest Address</label>
-                    <input type="text" class="form-control form-control-lg" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" maxlength="200" required>
+                    <label for="guest_address" class="form-label">Guest Address</label>
+                    <input type="text" class="form-control form-control-lg custom-input" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" maxlength="200" required>
                 </div>
 
                 <!-- Institution -->
                 <div class="form-group mb-4">
-                    <label for="institution" class="font-weight-bold">Institution</label>
-                    <input type="text" class="form-control form-control-lg" id="institution" name="institution" placeholder="Masukkan Institusi Anda" maxlength="100" required>
+                    <label for="institution" class="form-label">Institution</label>
+                    <input type="text" class="form-control form-control-lg custom-input" id="institution" name="institution" placeholder="Masukkan Institusi Anda" maxlength="100" required>
                 </div>
 
                 <!-- Purpose -->
                 <div class="form-group mb-4">
-                    <label for="purpose" class="font-weight-bold">Purpose</label>
-                    <textarea class="form-control form-control-lg" id="purpose" name="purpose" placeholder="Masukkan tujuan kunjungan" rows="3" required></textarea>
+                    <label for="purpose" class="form-label">Purpose</label>
+                    <textarea class="form-control form-control-lg custom-input" id="purpose" name="purpose" placeholder="Masukkan tujuan kunjungan" rows="3" required></textarea>
                 </div>
 
-                <!-- Upload PDF -->
+                <!-- PDF Upload -->
                 <div class="form-group mb-4">
-                    <label for="pdf_file" class="font-weight-bold">Upload PDF</label>
-                    <input type="file" class="form-control-file" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                    <label for="pdf_file" class="form-label">Upload PDF</label>
+                    <div class="pdf-upload-container" style="display: flex;">
+                        <input type="file" class="pdf-upload-input" id="pdf_file" name="pdf_file" accept=".pdf" style="display: none;" required>
+                        <button type="button" class="pdf-upload-btn custom-upload-btn" style="padding: 0.2rem 0.5rem; font-size: 0.9rem; display: inline-block;">
+                            <span class="upload-icon">↑</span> Upload
+                        </button>
+                        <div class="pdf-file-name-wrapper" style="margin-left: 1rem;">
+                            <span class="pdf-file-name"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- taken -->
+                <!-- Taken By -->
                 <div class="form-group mb-4">
-                    <label for="taken" class="font-weight-bold">Taken By</label>
-                    <select class="form-control form-control-lg" id="taken" name="taken" required>
+                    <label for="taken" class="form-label">Taken By</label>
+                    <select class="form-control form-control-lg custom-select" id="taken" name="taken" required>
                         <option value="Sule">Sule</option>
                         <option value="Ardi">Ardi</option>
                         <option value="Hutri">Hutri</option>
@@ -95,37 +87,29 @@
                 </div>
 
                 <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary btn-lg w-100">Submit</button>
+                <button type="submit" class="btn btn-primary btn-lg w-100 custom-submit-btn">Submit</button>
             </form>
         </div>
     </div>
 </div>
 
-<style>
-    /* Responsive form adjustments */
-    @media (max-width: 768px) {
-        .card-body {
-            padding: 20px;
-        }
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const pdfInput = document.querySelector('.pdf-upload-input');
+        const pdfButton = document.querySelector('.pdf-upload-btn');
+        const pdfFileName = document.querySelector('.pdf-file-name');
+        pdfButton.addEventListener('click', function () {
+            pdfInput.click();
+        });
 
-        .btn-lg {
-            font-size: 1.2rem;
-        }
-
-        .form-control-lg {
-            font-size: 1rem;
-        }
-    }
-
-    @media (min-width: 769px) {
-        .btn-lg {
-            font-size: 1.5rem;
-        }
-
-        .form-control-lg {
-            font-size: 1.25rem;
-        }
-    }
-</style>
-
+        pdfInput.addEventListener('change', function () {
+            if (pdfInput.files.length > 0) {
+                const fileName = pdfInput.files[0].name;
+                pdfFileName.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '---.pdf' : fileName;
+            } else {
+                pdfFileName.textContent = '';
+            }
+        });
+    });
+</script>
 @endsection

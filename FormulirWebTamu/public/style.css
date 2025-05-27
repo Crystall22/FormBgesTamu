@@ -1,16 +1,24 @@
+/* Existing Styles (Preserved) */
 body {
-    font-family: 'Gotham Rounded';
+    font-family: 'Gotham Rounded', sans-serif;
     background-color: #e42613;
+    /* Red background as per screenshot */
     color: #333;
     margin: 0;
     padding: 0;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    transition: background-color 0.3s, color 0.3s;
+    /* Only for mode toggle */
 }
 
 .wrapper {
     flex-grow: 1;
+    background-color: #e42613;
+    /* Match body background */
+    transition: background-color 0.3s;
+    /* Only for mode toggle */
 }
 
 .container {
@@ -18,8 +26,12 @@ body {
     margin: 30px auto;
     padding: 20px;
     background: #fff;
+    /* White container for light mode */
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: #333;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    /* Only for mode toggle */
 }
 
 h1 {
@@ -27,6 +39,8 @@ h1 {
     color: #4d4d4d;
     font-weight: bold;
     margin-bottom: 20px;
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
 h2 {
@@ -34,11 +48,14 @@ h2 {
     color: #000000;
     font-weight: bold;
     margin-bottom: 20px;
-    font-family: 'Gotham Rounded';
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
 h3 {
     color: #e42613;
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
 p2 {
@@ -46,12 +63,30 @@ p2 {
     color: #e42613;
     font-weight: bold;
     margin-bottom: 20px;
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
 .form-control {
     margin-bottom: 15px;
     border-radius: 8px;
     padding-bottom: 12px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+.form-control-lg {
+    padding: 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+    /* Fix text cutoff */
+    height: auto;
+    /* Ensure enough height for text */
+}
+
+.form-control::placeholder {
+    color: #6c757d !important;
 }
 
 .btn {
@@ -64,29 +99,54 @@ p2 {
     background-color: #e42613;
     border-color: #e42613;
     color: #fff;
-    transition: background-color 0.3s;
 }
 
 .btn-primary:hover {
     background-color: #b61c0f;
     border-color: #b61c0f;
+    transform: translateY(-2px);
+    /* Keep hover animation */
 }
 
 .btn-secondary {
     background-color: #325bcc;
     border-color: #325bcc;
     color: #fff;
-    transition: background-color 0.3s;
 }
 
 .btn-secondary:hover {
     background-color: #2b4bb2;
+    border-color: #2b4bb2;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+    border-color: #218838;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+    border-color: #bd2130;
 }
 
 .card {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
     margin-bottom: 20px;
+    background-color: #fff;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s, box-shadow 0.3s;
+    /* Only for mode toggle */
 }
 
 .card-title {
@@ -94,19 +154,26 @@ p2 {
     color: #b61c0f;
     font-weight: 600;
     margin-bottom: 15px;
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
+/* Banner Styles */
 .banner {
     background-color: #ffffff;
-    color: white;
+    /* White banner for light mode */
+    color: #000000;
     padding: 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-    border-bottom: 4px solid #ffffff;
+    border-bottom: 4px solid #e42613;
+    /* Keep red border */
     flex-wrap: wrap;
     font-family: 'Gotham Rounded';
+    transition: background-color 0.3s, color 0.3s;
+    /* Only for mode toggle */
 }
 
 .banner-content {
@@ -114,17 +181,24 @@ p2 {
     min-width: 250px;
 }
 
-.banner-content h1 {
+.banner-content h2 {
     font-size: 1.5rem;
     margin-bottom: 5px;
     font-weight: bold;
     line-height: 1.2;
+    color: #000000;
+    /* Black text in light mode */
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
 .banner-content p {
-    margin: 1;
+    margin: 0;
     font-size: 1.0rem;
     color: #000000;
+    /* Black text in light mode */
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
 .logo-container {
@@ -138,38 +212,247 @@ p2 {
     max-height: 70px;
     height: auto;
     width: auto;
+    filter: none;
+    /* No filter in light mode */
+    transition: filter 0.3s;
+    /* Only for mode toggle */
 }
 
-.banner-content1 {
-    text-align: center;
-    flex: 1;
-    min-width: 250px;
-}
-
-.banner-content1 p {
-    margin: 1;
-    font-size: 0.9rem;
-    color: #000000;
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-}
-
-/* Make the footer stick to the bottom */
+/* Footer Styles */
 .footer {
-    background-color: #ffffff;
+    background-color: #fff;
+    /* White footer for light mode */
     padding: 10px;
     text-align: center;
-    color: #000000;
+    color: #000;
     width: 100%;
     box-sizing: border-box;
+    transition: background-color 0.3s, color 0.3s;
+    /* Only for mode toggle */
 }
 
+.footer .banner-content p {
+    margin: 1px;
+    font-size: 0.9rem;
+    color: #000;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    transition: color 0.3s;
+    /* Only for mode toggle */
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+.pagination .btn {
+    background-color: #e42613;
+    border-color: #e42613;
+    color: #fff;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: 20px;
+}
+
+.pagination .btn:hover:not(.disabled) {
+    background-color: #b61c0f;
+    border-color: #b61c0f;
+    transform: translateY(-2px);
+    /* Keep hover animation */
+}
+
+.pagination .btn.active {
+    background-color: #b61c0f;
+    border-color: #b61c0f;
+}
+
+.pagination .btn.disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #e42613;
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: #b61c0f;
+}
+
+table.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table.table th,
+table.table td {
+    border: 1px solid #ddd;
+    padding: 12px;
+}
+
+.table-row {
+    transition: background-color 0.3s ease;
+    /* Keep for hover */
+}
+
+.table-row:hover {
+    background-color: #f8f9fa;
+}
+
+.table th {
+    font-weight: bold;
+    color: #4d4d4d;
+    background-color: #f1f1f1;
+    padding: 12px;
+    transition: color 0.3s, background-color 0.3s;
+    /* Only for mode toggle */
+}
+
+input:-webkit-autofill {
+    background-color: #fff !important;
+    color: #000 !important;
+    box-shadow: 0 0 0 1000px white inset !important;
+    -webkit-text-fill-color: #000;
+}
+
+.pdf-upload-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 100%;
+}
+
+.pdf-upload-input {
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.pdf-upload-btn {
+    background-color: #e42613;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    width: 100px;
+    max-width: 100px;
+}
+
+.pdf-upload-btn:hover {
+    background-color: #b61c0f;
+}
+
+.upload-icon {
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.pdf-file-name-wrapper {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.pdf-file-name {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.sorter-container {
+    min-width: 200px;
+}
+
+.sorter-select {
+    border-color: #e42613;
+    color: #e42613;
+    padding: 10px 12px;
+    /* Adjusted padding */
+    font-size: 1rem;
+    line-height: 1.5;
+    /* Fix text cutoff */
+    height: auto;
+    /* Ensure enough height */
+}
+
+.sorter-select:hover,
+.sorter-select:focus {
+    border-color: #b61c0f;
+    color: #b61c0f;
+    outline: none;
+}
+
+/* Additional Styles from Secretary Dashboard */
+.form-card {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    /* Keep for hover */
+}
+
+.form-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(228, 38, 19, 0.3) !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    /* Default Bootstrap muted color for light mode */
+    transition: color 0.3s;
+    /* Only for mode toggle */
+}
+
+.dashboard-btn {
+    border-color: #333;
+    color: #333;
+}
+
+.dashboard-btn:hover {
+    border-color: #e42613;
+    color: #e42613;
+    background-color: transparent;
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .banner {
         flex-direction: column;
-        text-align: center;
     }
 
-    .banner-content h1 {
+    .banner-content {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .banner-content h2 {
         font-size: 1.4rem;
     }
 
@@ -190,7 +473,6 @@ p2 {
     h1,
     h2 {
         font-size: 1.5rem;
-        font-family: 'Gotham Rounded';
     }
 
     .card-title {
@@ -207,6 +489,19 @@ p2 {
 
     .btn {
         padding: 8px 16px;
+    }
+
+    table.table th,
+    table.table td {
+        white-space: nowrap;
+    }
+
+    .pdf-upload-btn {
+        font-size: 0.85rem;
+    }
+
+    .pdf-file-name-wrapper {
+        max-width: 100%;
     }
 }
 
@@ -234,33 +529,74 @@ p2 {
     }
 }
 
-.pagination a {
-    color: black;
-    float: left;
-    padding: 8px 16px;
-    text-decoration: none;
-    transition: background-color .3s;
+/* Navigation Links */
+.nav-link {
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+    /* Only for mode toggle */
 }
 
-/* Style the active/current link */
-.pagination a.active {
-    background-color: #e42613;
-    color: white;
+.nav-link:hover {
+    color: #e42613;
 }
 
-/* Add a grey background color on mouse-over */
-.pagination a:hover:not(.active) {
-    background-color: #ddd;
+/* Table Container */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.pagination a.disabled {
-    pointer-events: none;
-    color: #ccc;
-    border-color: #ccc;
+/* Custom Table */
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #fff;
 }
 
-input:-webkit-autofill {
-    background-color: inherit !important;
-    color: inherit !important;
-    transition: background-color 5000s ease-in-out 0s;
+.custom-table-header {
+    background-color: #e0e0e0;
+    /* Light gray for light mode */
+    color: #333;
+}
+
+.custom-table-header th {
+    padding: 12px 16px;
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 2px solid #ccc;
+    transition: background-color 0.3s, color 0.3s;
+    /* Only for mode toggle */
+}
+
+.custom-table tbody tr {
+    transition: background-color 0.3s ease;
+    /* For hover */
+}
+
+.custom-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+    /* Slight gray for alternating rows */
+}
+
+.custom-table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.custom-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+    transition: color 0.3s;
+    /* Only for mode toggle */
+}
+
+/* Delete Button */
+.custom-table .btn-danger {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    border-radius: 6px;
 }
