@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('header', 'Management Dashboard')
+@section('header', ucfirst($type) . ' Management Dashboard')
 
 @section('content')
     @if(session('success'))
@@ -31,10 +31,8 @@
     </div>
 
     <div class="tab-content" id="managementTabsContent">
-        <!-- Under Review Tab -->
         <div class="tab-pane fade show active" id="underReview" role="tabpanel" aria-labelledby="under-review-tab">
             <h3 class="mb-4"><i class="fas fa-file-alt"></i> Forms Under Review</h3>
-
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle custom-table">
                     <thead>
@@ -88,10 +86,8 @@
             </div>
         </div>
 
-        <!-- History Tab -->
         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
             <h3 class="mb-4"><i class="fas fa-history"></i> History of Accepted and Rejected Forms</h3>
-
             <div class="table-responsive">
                 <table class="table table-hover table-bordered align-middle custom-table">
                     <thead>

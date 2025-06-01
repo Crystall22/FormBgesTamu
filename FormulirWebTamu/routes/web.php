@@ -31,11 +31,14 @@ Route::middleware([RoleMiddleware::class . ':secretary'])->group(function () {
 });
 
 Route::middleware([RoleMiddleware::class . ':management'])->group(function () {
-    Route::get('/management/dashboard', [ManagementController::class, 'dashboard'])->name('management.dashboard');
+    Route::get('/management/dashboard/{type}', [ManagementController::class, 'dashboard'])
+        ->name('management.dashboard')
+        ->where('type', 'business|government|enterprise');
+
     Route::put('/management/approve/{form}', [ManagementController::class, 'approve'])->name('management.approve');
     Route::put('/management/reject/{form}', [ManagementController::class, 'reject'])->name('management.reject');
-
 });
+
 
 Route::middleware([RoleMiddleware::class . ':security'])->group(function () {
     Route::get('/security/parkings', [ParkingController::class, 'index'])->name('parkings.index');
