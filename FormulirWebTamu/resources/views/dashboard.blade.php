@@ -1,110 +1,121 @@
+{{-- filepath: resources/views/dashboard.blade.php --}}
 @extends('layouts.app')
 
-@section('header',)
-
 @section('content')
-    <div class="container mt-4">
-        <div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-            <p2 class="text-lg font-semibold mb-2 mb-md-0">Form Lists</p2>
-            <nav class="navbar navbar-expand-lg navbar-light">
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ml-auto">
-                        @if (session('role') === 'receptionist')
-                            <li class="nav-item">
-                                <a href="{{ route('form.create') }}" class="nav-link">Go to Create Form</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('form.deleteScreen') }}" class="nav-link">Go to Delete Form</a>
-                            </li>
-                        @elseif (session('role') === 'secretary')
-                            <li class="nav-item">
-                                <a href="{{ route('secretary.dashboard') }}" class="nav-link">Secretary Dashboard</a>
-                            </li>
-                        @elseif (session('role') === 'management')
-                            <li class="nav-item">
-                                <a href="{{ route('management.dashboard') }}" class="nav-link">Management Dashboard</a>
-                            </li>
-                        @endif
-                    </ul>
+<div class="container page-inner">
+    <div class="page-header">
+        <h3 class="fw-bold mb-3">Daftar Tamu</h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="{{ route('dashboard') }}">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Tables</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">DataTables</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header">
+                    <h4 class="card-title">Daftar Tamu</h4>
                 </div>
-            </nav>
-        </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="guest-datatables" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Nama Tamu</th>
+                                    <th>No. HP</th>
+                                    <th>Alamat</th>
+                                    <th>Institusi</th>
+                                    <th>Tujuan</th>
+                                    <th>PDF</th>
+                                    <th>Petugas</th>
+                                    <th>Tanggal</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($forms as $form)
+                                <tr>
+                                    <td>{{ $form->guest_name }}</td>
+                                    <td>{{ $form->guest_phone }}</td>
+                                    <td>{{ $form->guest_address }}</td>
+                                    <td>{{ $form->institution }}</td>
+                                    <td>{{ $form->purpose }}</td>
+                                    <td>
+                                        @if($form->pdf_file)
+                                            <a href="{{ asset('storage/'.$form->pdf_file) }}" target="_blank" class="btn btn-sm btn-info">
+                                                <i class="fa fa-file-pdf"></i> Lihat
+                                            </a>
+                                        @else
+                                            <span class="badge bg-secondary">-</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $form->taken }}</td>
+                                    <td>{{ $form->created_at->format('d-m-Y H:i') }}</td>
+                                    <td>
+                                        {{-- Contoh tombol aksi --}}
+                                        <div class="form-button-action">
+                                            <a href="{{ route('dashboard', $form->id) }}" class="btn btn-link btn-primary btn-lg" data-bs-toggle="tooltip" title="Lihat Detail">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            {{-- @if(auth()->user()->role === 'receptionist') --}}
+                                            <form action="{{ route('form.destroy', $form->id) }}" method="POST" style="display:inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-link btn-danger" data-bs-toggle="tooltip" title="Hapus" onclick="return confirm('Yakin hapus data ini?')">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </form>
+                                            {{-- @endif --}}
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
 
-        <div class="card shadow-lg">
-            <div class="card-body">
-                <!-- Search Bar and Sorter Dropdown -->
-                <div class="mb-4 d-flex flex-column flex-md-row gap-3 align-items-center">
-                    <div class="flex-grow-1 w-100">
-                        <input type="text" id="search-input" placeholder="Cari Nama Tamu" class="form-control form-control-lg" autocomplete="off" maxlength="20" value="{{ $searchQuery ?? '' }}" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
-                    </div>
-                    <div class="sorter-container">
-                        <select id="sort-select" class="form-control form-control-lg sorter-select">
-                            <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Newest First</option>
-                            <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Oldest First</option>
-                        </select>
+                            </tfoot>
+                        </table>
                     </div>
                 </div>
-
-                <!-- Table with Responsive Scroll -->
-                <div class="table-responsive mb-4">
-                    <div id="form-list">
-                        @include('partials.tabel', ['forms' => $forms])
-                    </div>
-                </div>
-
-                    <!-- Pagination -->
-                    <div class="pagination d-flex justify-content-center flex-wrap gap-2">
-                        @if ($forms->onFirstPage())
-                            <a class="btn btn-primary btn-sm disabled" href="#">«</a>
-                        @else
-                            <a href="{{ $forms->previousPageUrl() }}" class="btn btn-primary btn-sm">«</a>
-                        @endif
-
-                        @for ($i = 1; $i <= $forms->lastPage(); $i++)
-                            <a href="{{ $forms->url($i) }}" class="btn btn-primary btn-sm {{ ($forms->currentPage() == $i) ? 'active' : '' }}">
-                                {{ $i }}
-                            </a>
-                        @endfor
-
-                        @if ($forms->hasMorePages())
-                            <a href="{{ $forms->nextPageUrl() }}" class="btn btn-primary btn-sm">»</a>
-                        @else
-                            <a class="btn btn-primary btn-sm disabled" href="#">»</a>
-                        @endif
-                    </div>
-                </div>
-            </div>
-        </div>
-
-                <!-- JavaScript for Real-Time Search -->
-                <script>
-                    document.getElementById('search-input').addEventListener('input', function() {
-                        let searchQuery = this.value;
-                        let sortQuery = new URLSearchParams(window.location.search).get('sort') || 'desc';
-
-                        fetch(`{{ route('dashboard') }}?search=${searchQuery}&sort=${sortQuery}`, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            document.getElementById('form-list').innerHTML = data.html;
-                        });
-                    });
-
-                    // Add event listener for sort select
-                    document.getElementById('sort-select').addEventListener('change', function() {
-                        let sortQuery = this.value;
-                        let searchQuery = document.getElementById('search-input').value;
-
-                        window.location.href = `{{ route('dashboard') }}?search=${searchQuery}&sort=${sortQuery}`;
-                    });
-                </script>
             </div>
         </div>
     </div>
+</div>
+
+{{-- DataTables Kaiadmin --}}
+@push('scripts')
+<script>
+    $(document).ready(function () {
+        $('#guest-datatables').DataTable({
+            "order": [[ 7, "desc" ]], // Urutkan berdasarkan tanggal terbaru
+            "language": {
+                "search": "Cari:",
+                "lengthMenu": "Tampilkan _MENU_ data",
+                "info": "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "»",
+                    "previous": "«"
+                }
+            }
+        });
+    });
+</script>
+@endpush
 @endsection

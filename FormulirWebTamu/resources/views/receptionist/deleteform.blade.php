@@ -1,60 +1,63 @@
+{{-- filepath: resources/views/receptionist/deleteform.blade.php --}}
 @extends('layouts.app')
 
-@section('header', '')
-
 @section('content')
-<div class="container mt-4">
-    <div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <h2 class="text-lg font-semibold mb-2 mb-md-0">
-            Delete Forms
-        </h2>
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link">
-                            Go to Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('form.create') }}" class="nav-link">
-                            Go to Create Form
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+<div class="container page-inner">
+    <div class="page-header mb-4">
+        <h3 class="fw-bold mb-3">
+            <i class="fas fa-trash-alt text-danger me-2"></i>
+            Delete Guest Forms
+        </h3>
+        <ul class="breadcrumbs mb-3">
+            <li class="nav-home">
+                <a href="{{ route('dashboard') }}">
+                    <i class="icon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Receptionist</a>
+            </li>
+            <li class="separator">
+                <i class="icon-arrow-right"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Delete Form</a>
+            </li>
+        </ul>
     </div>
 
     <div class="card shadow-lg">
         <div class="card-body">
             <!-- Search Bar and Sorter -->
-            <div class="mb-4 d-flex flex-column flex-md-row gap-3 align-items-center">
-                <div class="flex-grow-1 w-100">
-                    <input type="text" id="search-input" placeholder="Cari Nama Tamu" class="form-control form-control-lg" autocomplete="off" maxlength="20" value="{{ $searchQuery ?? '' }}" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+            <div class="row mb-4 align-items-center g-2">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+                        <input type="text" id="search-input" placeholder="Cari Nama Tamu" class="form-control" autocomplete="off" maxlength="20" value="{{ $searchQuery ?? '' }}" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
+                    </div>
                 </div>
-                <div class="sorter-container">
-                    <select id="sort-select" class="form-control form-control-lg sorter-select">
+                <div class="col-md-4">
+                    <select id="sort-select" class="form-select">
                         <option value="desc" {{ request('sort') == 'desc' ? 'selected' : '' }}>Newest First</option>
                         <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Oldest First</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Custom Table -->
-            <div class="table-container mb-4">
-                <table class="custom-table">
-                    <thead>
-                        <tr class="custom-table-header">
-                            <th>Date</th>
-                            <th>Guest Name</th>
-                            <th>Institution</th>
-                            <th>Taken By</th>
-                            <th>Invoice Number</th>
-                            <th>Actions</th>
+            <!-- Table -->
+            <div class="table-responsive mb-4">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><i class="fas fa-calendar-day"></i> Date</th>
+                            <th><i class="fas fa-user"></i> Guest Name</th>
+                            <th><i class="fas fa-building"></i> Institution</th>
+                            <th><i class="fas fa-user-check"></i> Taken By</th>
+                            <th><i class="fas fa-file-invoice"></i> Invoice Number</th>
+                            <th><i class="fas fa-cogs"></i> Actions</th>
                         </tr>
                     </thead>
                     <tbody id="form-list">
@@ -64,7 +67,7 @@
             </div>
 
             <!-- Pagination -->
-            <div class="pagination d-flex justify-content-center flex-wrap gap-2">
+            <div class="d-flex justify-content-center flex-wrap gap-2">
                 @if ($forms->onFirstPage())
                     <a class="btn btn-primary btn-sm disabled" href="#">«</a>
                 @else
@@ -87,7 +90,7 @@
     </div>
 </div>
 
-<!-- JavaScript for Real-Time Search -->
+@push('scripts')
 <script>
     document.getElementById('search-input').addEventListener('input', function() {
         let searchQuery = this.value;
@@ -104,7 +107,6 @@
         });
     });
 
-    // Add event listener for sort select
     document.getElementById('sort-select').addEventListener('change', function() {
         let sortQuery = this.value;
         let searchQuery = document.getElementById('search-input').value;
@@ -112,4 +114,5 @@
         window.location.href = `{{ route('form.deleteScreen') }}?search=${searchQuery}&sort=${sortQuery}`;
     });
 </script>
+@endpush
 @endsection

@@ -40,7 +40,7 @@ class LoginController extends Controller
 
         if ($input['username'] === $credentials['secretary']['username'] && $input['password'] === $credentials['secretary']['password']) {
             Session::put('role', 'secretary');
-            return redirect()->route('secretariat.dashboard')->with('success', 'Welcome Secretary!');
+            return redirect()->route('secretary.dashboard')->with('success', 'Welcome Secretary!');
         }
 
         if ($input['username'] === $credentials['management_business']['username'] && $input['password'] === $credentials['management_business']['password']) {

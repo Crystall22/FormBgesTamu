@@ -1,45 +1,48 @@
-@foreach ($forms as $form)
-    <tr>
-        <td>{{ $form->created_at->format('Y-m-d') }}</td>
-        <td>{{ $form->guest_name }}</td>
-        <td>{{ $form->institution }}</td>
-        <td>{{ $form->taken }}</td>
-        <td>{{ $form->invoice_number }}</td>
-        <td>
-            <form action="{{ route('form.destroy', $form->id) }}" method="POST" class="delete-form">
+{{-- filepath: resources/views/partials/delete-tabel.blade.php --}}
+@forelse($forms as $form)
+<tr>
+    <td>
+        <span class="badge bg-light text-dark">
+            <i class="fas fa-calendar-day me-1"></i>
+            {{ $form->created_at ? $form->created_at->format('d-m-Y') : '-' }}
+        </span>
+    </td>
+    <td>
+        <i class="fas fa-user text-primary me-1"></i>
+        {{ $form->guest_name }}
+    </td>
+    <td>
+        <i class="fas fa-building text-secondary me-1"></i>
+        {{ $form->institution }}
+    </td>
+    <td>
+        <i class="fas fa-user-check text-success me-1"></i>
+        {{ $form->taken }}
+    </td>
+    <td>
+        <i class="fas fa-file-invoice text-info me-1"></i>
+        {{ $form->invoice_number ?? '-' }}
+    </td>
+    <td>
+        <div class="btn-group" role="group">
+            <a href="{{ route('dashboard', $form->id) }}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="View Detail">
+                <i class="fas fa-eye"></i>
+            </a>
+            <form action="{{ route('form.destroy', $form->id) }}" method="POST" style="display:inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-danger">Delete</button>
+                <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('Yakin hapus data ini?')">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </form>
-        </td>
-    </tr>
-@endforeach
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.querySelectorAll('.delete-form').forEach(form => {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            Swal.fire({
-                title: 'Are you sure?',
-                text: "This action is irreversible!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'Hapus',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your form has been deleted.',
-                        'success'
-                    );
-                    form.submit();
-                }
-            });
-        });
-    });
-</script>
+        </div>
+    </td>
+</tr>
+@empty
+<tr>
+    <td colspan="6" class="text-center text-muted py-4">
+        <i class="fas fa-inbox fa-2x mb-2"></i>
+        <div>No data found.</div>
+    </td>
+</tr>
+@endforelse

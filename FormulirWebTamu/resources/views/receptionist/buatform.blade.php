@@ -3,91 +3,59 @@
 @section('content')
 <div class="container mt-4">
     @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-    <div class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-center">
-        <h2 class="text-lg font-semibold mb-2 mb-md-0">Guest Information</h2>
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a href="{{ route('dashboard') }}" class="nav-link">Go to Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('form.deleteScreen') }}" class="nav-link">Go to Delete Form</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    <!-- Form -->
     <div class="card shadow-lg">
-        <div class="card-body p-4">
+        <div class="card-header">
+            <div class="card-title fw-bold">Guest Information</div>
+        </div>
+        <div class="card-body">
             <form action="{{ route('receptionist.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <!-- Guest Name -->
-                <div class="form-group mb-4">
-                    <label for="guest_name" class="form-label">Guest Name</label>
-                    <input type="text" class="form-control form-control-lg custom-input" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" maxlength="75" required>
-                </div>
-
-                <!-- Phone Number -->
-                <div class="form-group mb-4">
-                    <label for="guest_phone" class="form-label">Phone Number</label>
-                    <input type="tel" class="form-control form-control-lg custom-input" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" maxlength="14" pattern="[0-9]{10,14}" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-                </div>
-
-                <!-- Guest Address -->
-                <div class="form-group mb-4">
-                    <label for="guest_address" class="form-label">Guest Address</label>
-                    <input type="text" class="form-control form-control-lg custom-input" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" maxlength="200" required>
-                </div>
-
-                <!-- Institution -->
-                <div class="form-group mb-4">
-                    <label for="institution" class="form-label">Institution</label>
-                    <input type="text" class="form-control form-control-lg custom-input" id="institution" name="institution" placeholder="Masukkan Institusi Anda" maxlength="100" required>
-                </div>
-
-                <!-- Purpose -->
-                <div class="form-group mb-4">
-                    <label for="purpose" class="form-label">Purpose</label>
-                    <textarea class="form-control form-control-lg custom-input" id="purpose" name="purpose" placeholder="Masukkan tujuan kunjungan" rows="3" required></textarea>
-                </div>
-
-                <!-- PDF Upload -->
-                <div class="form-group mb-4">
-                    <label for="pdf_file" class="form-label">Upload PDF</label>
-                    <div class="pdf-upload-container" style="display: flex;">
-                        <input type="file" class="pdf-upload-input" id="pdf_file" name="pdf_file" accept=".pdf" style="display: none;" required>
-                        <button type="button" class="pdf-upload-btn custom-upload-btn" style="padding: 0.2rem 0.5rem; font-size: 0.9rem; display: inline-block;">
-                            <span class="upload-icon">↑</span> Upload
-                        </button>
-                        <div class="pdf-file-name-wrapper" style="margin-left: 1rem;">
-                            <span class="pdf-file-name"></span>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="guest_name">Guest Name</label>
+                            <input type="text" class="form-control" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" maxlength="75" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_phone">Phone Number</label>
+                            <input type="tel" class="form-control" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" maxlength="14" pattern="[0-9]{10,14}" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                        </div>
+                        <div class="form-group">
+                            <label for="guest_address">Guest Address</label>
+                            <input type="text" class="form-control" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" maxlength="200" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="institution">Institution</label>
+                            <input type="text" class="form-control" id="institution" name="institution" placeholder="Masukkan Institusi Anda" maxlength="100" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="purpose">Purpose</label>
+                            <textarea class="form-control" id="purpose" name="purpose" rows="3" placeholder="Masukkan tujuan kunjungan" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="pdf_file">Upload PDF</label>
+                            <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taken">Taken By</label>
+                            <select class="form-select" id="taken" name="taken" required>
+                                <option value="Sule">Sule</option>
+                                <option value="Ardi">Ardi</option>
+                                <option value="Hutri">Hutri</option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- Taken By -->
-                <div class="form-group mb-4">
-                    <label for="taken" class="form-label">Taken By</label>
-                    <select class="form-control form-control-lg custom-select" id="taken" name="taken" required>
-                        <option value="Sule">Sule</option>
-                        <option value="Ardi">Ardi</option>
-                        <option value="Hutri">Hutri</option>
-                    </select>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" class="btn btn-primary btn-lg w-100 custom-submit-btn">Submit</button>
+                <button type="submit" class="btn btn-primary w-100 mt-3">Submit</button>
             </form>
         </div>
     </div>
