@@ -14,7 +14,8 @@ class Parking extends Model
         'license_number',
         'status',
         'borrower_name',
-        'parking_location',
+        'slot',
         'borrower_position',
+        'purpose',
     ];
 }

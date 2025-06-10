@@ -40,7 +40,6 @@ class ManagementController extends Controller
         return view('management.dashboard', compact('formsUnderReview', 'formsHistory', 'type'));
     }
 
-
     public function approve($id)
     {
         $form = Form::findOrFail($id);
@@ -50,12 +49,30 @@ class ManagementController extends Controller
         return redirect()->back()->with('success', 'Form approved successfully.');
     }
 
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
+        $request->validate([
+            'reject_reason' => 'required|string|max:255',
+        ]);
         $form = Form::findOrFail($id);
         $form->status = 'rejected';
+        $form->reject_reason = $request->reject_reason;
         $form->save();
 
         return redirect()->back()->with('success', 'Form rejected successfully.');
+    }
+
+    public function show($id)
+    {
+        $form = Form::findOrFail($id);
+        return view('management.show', compact('form'));
+    }
+
+    public function destroy($id)
+    {
+        $form = Form::findOrFail($id);
+        $form->delete();
+
+        return redirect()->back()->with('success', 'Form deleted successfully.');
     }
 }

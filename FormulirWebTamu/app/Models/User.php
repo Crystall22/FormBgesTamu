@@ -69,6 +69,6 @@ class User extends Authenticatable
      */
     public function isManagement(): bool
     {
-        return $this->role === 'management';
+        return str_starts_with($this->role, 'management-');
     }
 }

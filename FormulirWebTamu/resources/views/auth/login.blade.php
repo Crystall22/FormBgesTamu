@@ -113,16 +113,14 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" name="username" class="form-control" id="username" placeholder="Enter username" required>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" class="form-control" id="email" required autofocus>
                 </div>
-
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" name="password" class="form-control" id="password" placeholder="Enter password" required>
+                    <input type="password" name="password" class="form-control" id="password" required>
                 </div>
-
-                <button type="submit" class="btn btn-primary">Login</button>
+                <button type="submit" class="btn btn-primary w-100 mt-3">Login</button>
             </form>
         </div>
     </div>

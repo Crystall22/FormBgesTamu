@@ -56,8 +56,8 @@
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="parking_location">Parking Location</label>
-                    <input type="text" class="form-control" id="parking_location" name="parking_location" value="{{ $parking->parking_location }}">
+                    <label for="slot">Slot Parkir</label>
+                    <input type="number" class="form-control" id="slot" name="slot" value="{{ $parking->slot }}" required min="1" >
                 </div>
 
                 <div class="form-group mb-4">

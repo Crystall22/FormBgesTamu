@@ -14,9 +14,17 @@
             <i class="fas fa-parking text-primary me-2"></i>
             Parking List
         </h3>
-        <a href="{{ route('parkings.create') }}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm">
-            <i class="fas fa-plus"></i> Add Parking
-        </a>
+        <div>
+            <a href="{{ route('parkings.pinjam') }}" class="btn btn-success btn-sm px-3 py-2 shadow-sm me-2">
+                <i class="fas fa-car-side"></i> Pinjam Mobil
+            </a>
+            <a href="{{ route('parkings.returnForm') }}" class="btn btn-warning btn-sm px-3 py-2 shadow-sm me-2">
+                <i class="fas fa-undo"></i> Pengembalian Mobil
+            </a>
+            <a href="{{ route('parkings.create') }}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm">
+                <i class="fas fa-plus"></i> Add Parking
+            </a>
+        </div>
     </div>
 
     <div class="row g-3">
@@ -33,6 +41,11 @@
                         </span>
                         <div class="fw-bold fs-5 mt-2" style="letter-spacing:2px;">
                             {{ preg_replace('/([A-Za-z]{1,2})(\d{1,4})([A-Za-z]{0,4})/', '$1 $2 $3', $parking->license_number) }}
+                        </div>
+                        <div class="text-muted small mt-1" style="letter-spacing:1px;">
+                            <span class="badge bg-light text-dark border" style="font-size: 0.95em;">
+                                 {{ $parking->slot ?? '-' }}
+                            </span>
                         </div>
                     </div>
                 </div>

@@ -19,8 +19,9 @@ class CreateParkingsTable extends Migration
             $table->string('license_number');
             $table->string('status')->default('available');
             $table->string('borrower_name')->nullable();
-            $table->string('parking_location')->nullable();
+            $table->integer('slot')->unique()->nullable(); // Ganti dari parking_location ke slot (integer, unique, nullable)
             $table->string('borrower_position')->nullable();
+            $table->string('purpose')->nullable();
             $table->timestamps();
         });
     }

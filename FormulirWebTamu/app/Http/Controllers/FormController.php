@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Form;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Support\Facades\Storage;
 
 class FormController extends Controller
 {
@@ -11,10 +13,12 @@ class FormController extends Controller
     {
         return view('receptionist.buatform');
     }
+
     public function dashboard(Request $request)
     {
         return $this->showForms($request);
     }
+
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -26,21 +30,33 @@ class FormController extends Controller
             'taken' => 'required|string',
             'pdf_file' => 'required|file|mimes:pdf|max:2048',
         ]);
+
         if ($request->hasFile('pdf_file')) {
             $pdfPath = $request->file('pdf_file')->store('pdfs', 'public');
         } else {
             return redirect()->back()->with('error', 'PDF file upload failed.');
         }
+
         $form = new Form();
-        $form->guest_name = $request['guest_name'];
-        $form->guest_phone = $request['guest_phone'];
-        $form->guest_address = $request['guest_address'];
-        $form->institution = $request['institution'];
-        $form->purpose = $request['purpose'];
-        $form->taken = $request['taken'];
-        $form->invoice_number = $this->generateInvoiceNumber($request['taken']);
+        $form->guest_name = $request->guest_name;
+        $form->guest_phone = $request->guest_phone;
+        $form->guest_address = $request->guest_address;
+        $form->institution = $request->institution;
+        $form->purpose = $request->purpose;
+        $form->taken = $request->taken;
+        $form->invoice_number = $this->generateInvoiceNumber($request->taken);
         $form->date = now()->format('Y-m-d');
-        $form->pdf_file = $pdfPath; // SavePDF
+        $form->pdf_file = $pdfPath;
+        $form->save();
+
+        // Generate QR code setelah form disimpan (pakai ID form) dengan driver default (GD jika imagick tidak ada)
+        $qrUrl = route('form.qr', $form->id);
+        $qrImage = QrCode::format('png')->size(300)->generate($qrUrl);
+        $qrPath = 'qrcodes/form_' . $form->id . '.png';
+        Storage::disk('public')->put($qrPath, $qrImage);
+
+        // Simpan path QR ke database
+        $form->qr_code = $qrPath;
         $form->save();
 
         return redirect()->route('dashboard')->with('success', 'Form successfully submitted!');
@@ -102,6 +118,7 @@ class FormController extends Controller
 
         return redirect()->route('form.deleteScreen')->with('success', 'Form successfully deleted.');
     }
+
     private function generateInvoiceNumber($taken)
     {
         // Mengambil increment number dari id terbesar di database
@@ -114,5 +131,17 @@ class FormController extends Controller
 
         // Generate the invoice number
         return 'INV' . now()->format('Ymd') . $incrementNumber . $takenCode;
+    }
+
+    public function showDetail($id)
+    {
+        $form = Form::findOrFail($id);
+        return view('receptionist.detail', compact('form'));
+    }
+
+    public function showQrDetail($id)
+    {
+        $form = Form::findOrFail($id);
+        return view('form.qr-detail', compact('form'));
     }
 }

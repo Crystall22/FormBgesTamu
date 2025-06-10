@@ -24,11 +24,6 @@
                 </a>
             </li>
         </ul>
-
-        <!-- Dashboard Button -->
-        <a href="{{ route('dashboard') }}" class="btn btn-primary btn-sm px-3 py-2 shadow-sm">
-            <i class="fas fa-house"></i>
-        </a>
     </div>
 
     <div class="tab-content" id="managementTabsContent">
@@ -49,7 +44,7 @@
                     </thead>
                     <tbody>
                         @forelse($formsUnderReview as $form)
-                            <tr class="text-center">
+                            <tr class="text-center align-middle">
                                 <td>
                                     <i class="fas fa-user text-primary me-1"></i>
                                     {{ $form->guest_name ?? 'N/A' }}
@@ -70,21 +65,51 @@
                                     <i class="fas fa-sticky-note text-warning me-1"></i>
                                     {{ $form->note ?? 'N/A' }}
                                 </td>
-                                <td class="d-flex justify-content-center gap-2">
-                                    <form action="{{ route('management.approve', $form->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-sm btn-success px-3 py-1" data-bs-toggle="tooltip" title="Approve">
-                                            <i class="fas fa-check"></i>
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('management.reject', $form->id) }}" method="POST">
-                                        @csrf
-                                        @method('PUT')
-                                        <button type="submit" class="btn btn-sm btn-danger px-3 py-1" data-bs-toggle="tooltip" title="Reject">
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+                                        <form action="{{ route('management.approve', $form->id) }}" method="POST">
+                                            @csrf
+                                            @method('PUT')
+                                            <button type="submit" class="btn btn-sm btn-success px-3 py-1" data-bs-toggle="tooltip" title="Approve">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        <!-- Reject Button triggers modal -->
+                                        <button type="button" class="btn btn-sm btn-danger px-3 py-1" data-bs-toggle="modal" data-bs-target="#rejectModal-{{ $form->id }}" title="Reject">
                                             <i class="fas fa-times"></i>
                                         </button>
-                                    </form>
+                                    </div>
+                                    <!-- Modal for Reject Reason -->
+                                    <div class="modal fade" id="rejectModal-{{ $form->id }}" tabindex="-1" aria-labelledby="rejectModalLabel-{{ $form->id }}" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <form action="{{ route('management.reject', $form->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <div class="modal-header bg-danger text-white">
+                                                        <h5 class="modal-title" id="rejectModalLabel-{{ $form->id }}">
+                                                            <i class="fas fa-times-circle me-2"></i>Alasan Penolakan
+                                                        </h5>
+                                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="mb-3">
+                                                            <label for="reason-{{ $form->id }}" class="form-label fw-semibold">
+                                                                <i class="fas fa-comment-dots me-1 text-danger"></i>Masukkan alasan penolakan
+                                                            </label>
+                                                            <textarea name="reject_reason" id="reason-{{ $form->id }}" class="form-control" rows="3" required placeholder="Tulis alasan penolakan di sini..."></textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                        <button type="submit" class="btn btn-danger">
+                                                            <i class="fas fa-times"></i> Tolak Form
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td>
                                     <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-sm btn-primary px-3 py-1" data-bs-toggle="tooltip" title="View PDF">
@@ -117,11 +142,12 @@
                             <th><i class="fas fa-user-check"></i> Taken</th>
                             <th><i class="fas fa-file-invoice"></i> Invoice Number</th>
                             <th><i class="fas fa-info-circle"></i> Status</th>
+                            <th><i class="fas fa-comment-dots"></i> Reject Reason</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($formsHistory as $form)
-                            <tr class="text-center">
+                            <tr class="text-center align-middle">
                                 <td>
                                     <i class="fas fa-user text-primary me-1"></i>
                                     {{ $form->guest_name ?? 'N/A' }}
@@ -151,10 +177,20 @@
                                         <span class="badge bg-warning text-dark"><i class="fas fa-hourglass-half me-1"></i>Under Review</span>
                                     @endif
                                 </td>
+                                <td>
+                                    @if($form->status === 'rejected')
+                                        <span class="badge bg-danger-subtle text-dark">
+                                            <i class="fas fa-comment-dots me-1"></i>
+                                            {{ $form->reject_reason ?? '-' }}
+                                        </span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-warning">
+                                <td colspan="7" class="text-center text-warning">
                                     <i class="fas fa-inbox fa-2x mb-2"></i>
                                     <div>No form history available.</div>
                                 </td>

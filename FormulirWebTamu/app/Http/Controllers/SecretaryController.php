@@ -4,11 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Storage;
 use App\Models\Form;
-use Illuminate\Http\Request;
-
-namespace App\Http\Controllers;
-
-use App\Models\Form;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class SecretaryController extends Controller
@@ -16,7 +12,7 @@ class SecretaryController extends Controller
     public function dashboard()
     {
         $forms = Form::whereNull('note')->get();
-        return view('secretary.dashboard', compact('forms'));  // rename folder view ke sekretariat
+        return view('secretary.dashboard', compact('forms'));
     }
 
     public function showForm($id)
@@ -29,13 +25,13 @@ class SecretaryController extends Controller
     {
         $request->validate([
             'note' => 'required|string|max:255',
-            'management_type' => 'required|in:business,government,enterprise', // validate input baru
+            'management_type' => 'required|in:business,government,enterprise',
         ]);
 
         $form = Form::findOrFail($id);
         $form->note = $request->note;
         $form->forwarded_to_management = true;
-        $form->forwarded_to_management_type = $request->management_type;  // simpan tipe management
+        $form->forwarded_to_management_type = $request->management_type;
         $form->save();
 
         return redirect()->route('secretary.dashboard')->with('success', 'Form successfully forwarded to management.');
@@ -50,4 +46,5 @@ class SecretaryController extends Controller
         }
         return redirect()->back()->with('error', 'File not found.');
     }
+
 }
