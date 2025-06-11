@@ -49,18 +49,20 @@ class FormController extends Controller
         $form->pdf_file = $pdfPath;
         $form->save();
 
-        // Generate QR code setelah form disimpan (pakai ID form) dengan driver default (GD jika imagick tidak ada)
-        $qrUrl = route('form.qr', $form->id);
-        $qrImage = QrCode::format('png')->size(300)->generate($qrUrl);
-        $qrPath = 'qrcodes/form_' . $form->id . '.png';
-        Storage::disk('public')->put($qrPath, $qrImage);
+        // Generate QR code setelah form disimpan (pakai ID form) dengan format SVG
+        $qrUrl = route('form.detail', $form->id); // <-- arahkan ke detail receptionist
+        $qrSvg = QrCode::format('svg')->size(300)->generate($qrUrl);
+        $qrPath = 'qrcodes/form_' . $form->id . '.svg';
+        Storage::disk('public')->put($qrPath, $qrSvg);
 
         // Simpan path QR ke database
         $form->qr_code = $qrPath;
         $form->save();
 
-        return redirect()->route('dashboard')->with('success', 'Form successfully submitted!');
+        // Redirect ke halaman QR detail setelah submit
+        return redirect()->route('receptionist.qr-detail', $form->id)->with('success', 'Form successfully submitted!');
     }
+
 
     public function showForms(Request $request)
     {
@@ -73,13 +75,12 @@ class FormController extends Controller
                     ->orWhere('taken', 'like', "%{$searchQuery}%");
             })
             ->orderBy('created_at', $sortOrder)
-            ->paginate(5)
-            ->appends(['search' => $searchQuery, 'sort' => $sortOrder]);
+            ->get(); // Hapus ->appends(['search' => $searchQuery, 'sort' => $sortOrder]);
 
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('partials.tabel', compact('forms'))->render(),
-                'pagination' => (string) $forms->links(),
+                // Hapus 'pagination' jika tidak pakai paginate
             ]);
         }
 
@@ -109,6 +110,20 @@ class FormController extends Controller
         }
 
         return view('receptionist.deleteform', compact('forms', 'searchQuery', 'sortOrder'));
+    }
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+        $deleted = Form::whereBetween('created_at', [
+            $request->start_date . ' 00:00:00',
+            $request->end_date . ' 23:59:59'
+        ])->delete();
+
+        return redirect()->route('form.deleteScreen')->with('success', $deleted . ' data berhasil dihapus.');
     }
 
     public function destroy($id)
@@ -142,6 +157,18 @@ class FormController extends Controller
     public function showQrDetail($id)
     {
         $form = Form::findOrFail($id);
-        return view('form.qr-detail', compact('form'));
+        return view('receptionist.qr-detail', compact('form'));
+    }
+    public function downloadQr($id)
+    {
+        $form = Form::findOrFail($id);
+        if (!$form->qr_code || !\Storage::disk('public')->exists($form->qr_code)) {
+            abort(404, 'QR code not found.');
+        }
+        $svg = \Storage::disk('public')->get($form->qr_code);
+        $filename = 'qr_form_' . $form->id . '.svg';
+        return response($svg)
+            ->header('Content-Type', 'image/svg+xml')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
     }
 }

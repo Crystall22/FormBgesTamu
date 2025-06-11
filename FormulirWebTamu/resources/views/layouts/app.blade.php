@@ -155,6 +155,14 @@
                             </a>
                         </li>
                     @endif
+
+                    {{-- Chat --}}
+                    <li class="nav-item {{ request()->is('chat*') ? 'active' : '' }}">
+                        <a href="{{ route('chat.index') }}">
+                            <i class="fas fa-comments"></i>
+                            <p>Chat</p>
+                        </a>
+                    </li>
                 </ul>
                 {{-- Logout di paling bawah --}}
                 {{-- Sidebar Logout --}}
@@ -221,6 +229,22 @@
                                 <span class="fw-bold">{{ auth()->user()->name ?? 'Guest' }}</span>
                             </span>
                         </li>
+
+                        {{-- Di navbar header --}}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link position-relative" href="#" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-bell fa-lg"></i>
+                                <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.75em;display:none;">
+                                    {{-- Akan diisi JS --}}
+                                </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown" style="min-width:300px;">
+                                <li class="dropdown-header fw-bold">Notifikasi</li>
+                                <li>
+                                    <div id="notif-list" class="px-3 py-2 text-muted small">Tidak ada notifikasi baru.</div>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -279,5 +303,38 @@
 <script src="{{ asset('assets/js/setting-demo.js') }}"></script>
 <script src="{{ asset('assets/js/demo.js') }}"></script>
 @stack('scripts')
+@push('scripts')
+<script>
+setInterval(function() {
+    $.get("{{ route('chat.unread.count') }}", function(data) {
+        if(data.new_message) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Pesan Baru!',
+                text: data.text,
+                timer: 2500,
+                showConfirmButton: false
+            });
+        }
+        $('#notif-badge').text(data.count > 0 ? data.count : '').toggle(data.count > 0);
+    });
+}, 5000);
+</script>
+@endpush
+
+@push('scripts')
+<script>
+function loadNotif() {
+    $.get("{{ route('chat.unread.list') }}", function(data) {
+        $('#notif-list').html(data.html);
+        $('#notif-badge').text(data.count > 0 ? data.count : '').toggle(data.count > 0);
+    });
+}
+$(function(){
+    loadNotif();
+    setInterval(loadNotif, 10000);
+});
+</script>
+@endpush
 </body>
 </html>

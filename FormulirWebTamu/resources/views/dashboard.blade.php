@@ -123,6 +123,7 @@
                 }
             },
             "scrollX": true,
+            "pageLength": 5, // jumlah data per halaman
             "dom": '<"top"f>rt<"bottom d-flex justify-content-between align-items-center"ip><"clear">'
         });
     });

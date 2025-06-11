@@ -6,6 +6,7 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ParkingController;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
 
 // Redirect root ke login
@@ -22,15 +23,13 @@ Route::middleware('auth')->put('/profile', [App\Http\Controllers\ProfileControll
 Route::middleware('auth')->get('/profile', function () {
     return view('profile.profiles');
 })->name('profile');
-
-// Semua route di bawah ini hanya untuk user yang sudah login
+Route::get('/chat/user/{id}/fetch', [ChatController::class, 'fetchMessages'])->name('chat.fetch')->middleware('auth');// Semua route di bawah ini hanya untuk user yang sudah login
 Route::middleware('auth')->group(function () {
 
     // Dashboard umum
     Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/detail/{id}', [FormController::class, 'showDetail'])->name('dashboard.detail');
-    // QR Detail (bisa di-scan siapa saja yang login)
-    Route::get('/form/qr/{id}', [FormController::class, 'showQrDetail'])->name('form.qr');
+
 
     // Receptionist
     Route::middleware([RoleMiddleware::class . ':receptionist'])->group(function () {
@@ -38,7 +37,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/receptionist/store', [FormController::class, 'store'])->name('receptionist.store');
         Route::get('/receptionist/deleteform', [FormController::class, 'deleteScreen'])->name('form.deleteScreen');
         Route::delete('/form/{id}', [FormController::class, 'destroy'])->name('form.destroy');
-        Route::get('/receptionist/form/{id}/qr', [FormController::class, 'showQrDetail'])->name('form.receptionist.qr'); // Menampilkan QR Code
+        Route::get('/receptionist/form/{id}/qr', [FormController::class, 'showQrDetail'])->name('receptionist.qr-detail');
+        Route::post('/receptionist/delete-period', [FormController::class, 'bulkDelete'])->name('form.bulkDelete');
     });
 
     // Secretary
@@ -86,4 +86,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/security/parkings/return', [ParkingController::class, 'returnForm'])->name('parkings.returnForm');
         Route::post('/security/parkings/return', [ParkingController::class, 'return'])->name('parkings.return');
     });
+
+    // Chat routes
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/user/{id}', [ChatController::class, 'chatWithUser'])->name('chat.user');
+    Route::post('/chat/send/{id}', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/unread/count', [ChatController::class, 'unreadCount'])->name('chat.unread.count');
+    Route::get('/chat/unread/list', [ChatController::class, 'unreadList'])->name('chat.unread.list');
+
 });
+
+// Route publik untuk detail form (tanpa auth)
+Route::get('/form/{id}/detail', [FormController::class, 'showDetail'])->name('form.detail');
+Route::get('/form/{id}/download-qr', [FormController::class, 'downloadQr'])->name('form.downloadQr');

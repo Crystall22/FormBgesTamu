@@ -31,6 +31,24 @@
 
     <div class="card shadow-lg">
         <div class="card-body">
+            <!-- Fitur Hapus Berdasarkan Periode -->
+            <form action="{{ route('form.bulkDelete') }}" method="POST" class="row g-2 align-items-end mb-4">
+                @csrf
+                <div class="col-md-3">
+                    <label for="start_date" class="form-label mb-1">Dari Tanggal</label>
+                    <input type="date" name="start_date" id="start_date" class="form-control" required value="{{ request('start_date') }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="end_date" class="form-label mb-1">Sampai Tanggal</label>
+                    <input type="date" name="end_date" id="end_date" class="form-control" required value="{{ request('end_date') }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="fas fa-trash-alt me-1"></i> Hapus Berdasarkan Periode
+                    </button>
+                </div>
+            </form>
+
             <!-- Search Bar and Sorter -->
             <div class="row mb-4 align-items-center g-2">
                 <div class="col-md-8">

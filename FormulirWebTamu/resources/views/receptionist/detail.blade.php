@@ -31,9 +31,18 @@
                     </span>
                 </div>
                 @if($form->qr_code)
-                <div class="ms-auto text-center">
-                    <img src="{{ asset('storage/' . $form->qr_code) }}" alt="QR Code" width="100" class="rounded shadow border bg-white p-2">
-                    <div class="small text-muted mt-2">Scan untuk cek status</div>
+                <div class="ms-auto d-flex flex-column align-items-center">
+                    <div class="d-flex align-items-center mb-1">
+                        <a href="{{ route('receptionist.qr-detail', $form->id) }}" class="btn btn-outline-info btn-sm me-2">
+                            <i class="fa fa-qrcode me-1"></i> Lihat QR Detail
+                        </a>
+                        <div class="rounded shadow border bg-white p-2"
+                            style="width:110px; height:110px; display:flex; align-items:center; justify-content:center; cursor:pointer;"
+                            onclick="confirmDownloadQr('{{ route('form.downloadQr', $form->id) }}')"
+                            title="Klik untuk download QR Code">
+                            {!! Storage::disk('public')->get($form->qr_code) !!}
+                        </div>
+                    </div>
                 </div>
                 @endif
             </div>
@@ -112,3 +121,23 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDownloadQr(url) {
+    Swal.fire({
+        title: 'Download QR Code?',
+        text: 'Apakah Anda ingin mengunduh gambar QR ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Download',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = url;
+        }
+    });
+}
+</script>
+@endpush
