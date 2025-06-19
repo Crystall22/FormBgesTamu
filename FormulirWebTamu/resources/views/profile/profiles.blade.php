@@ -53,8 +53,8 @@
                             <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save"></i> Simpan Perubahan
                             </button>
-                            <a href="#" class="btn btn-warning disabled">
-                                <i class="fas fa-key"></i> Ganti Password (coming soon)
+                            <a href="{{ route('profile.change-password') }}" class="btn btn-warning">
+                                <i class="fas fa-key"></i> Ganti Password
                             </a>
                         </div>
                     </form>

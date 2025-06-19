@@ -113,9 +113,11 @@
                 </div>
             </div>
             <div class="mt-4 d-flex justify-content-end">
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary">
+                @auth
+                <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">
                     <i class="fa fa-arrow-left me-1"></i> Kembali ke Dashboard
                 </a>
+                @endauth
             </div>
         </div>
     </div>

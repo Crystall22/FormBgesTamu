@@ -40,6 +40,9 @@ class LoginController extends Controller
                 return redirect()->route('parkings.index');
             }
             return redirect()->route('dashboard');
+            if ($user->role === 'customer_service') {
+                return redirect()->route('customerservice.index');
+            }
         }
 
         return back()->with('error', 'Email atau password salah.');

@@ -2,10 +2,10 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Formulir Web Tamu')</title>
+    <title>@yield('title', 'BGES E-Form')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="{{ asset('assets/img/kaiadmin/favicon.ico') }}" type="image/x-icon" />
+    <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
 
     <!-- Fonts and icons -->
     <script src="{{ asset('assets/js/plugin/webfont/webfont.min.js') }}"></script>
@@ -33,16 +33,28 @@
     <link rel="stylesheet" href="{{ asset('assets/css/kaiadmin.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
     @stack('styles')
+
+    {{-- Tambahkan di dalam <head> --}}
+    <style>
+        .wrapper-guest .main-panel {
+            width: 100% !important;
+            margin-left: 0 !important;
+        }
+        .wrapper-guest .container {
+            max-width: 100%;
+        }
+    </style>
 </head>
 <body>
-<div class="wrapper">
+<div class="wrapper @guest wrapper-guest @endguest">
+    @auth
     <!-- Sidebar -->
     <div class="sidebar" data-background-color="dark">
         <div class="sidebar-logo">
             <div class="logo-header" data-background-color="dark">
                 <a href="{{ url('/') }}" class="logo d-flex justify-content-center align-items-center" style="height:90px;">
                     <img src="{{ asset('images/telkom2.png') }}" alt="navbar brand" class="navbar-brand"
-                        style="max-height: 80px; max-width: 95%; object-fit: contain; margin: 0 auto; display: block;" />
+                        style="max-height: 70px; max-width: 95%; object-fit: contain; margin: 0 auto; display: block;" />
                 </a>
                 <div class="nav-toggle">
                     <button class="btn btn-toggle toggle-sidebar">
@@ -58,131 +70,216 @@
             </div>
         </div>
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
-            <div class="sidebar-content" style="display: flex; flex-direction: column; height: 100%;">
-                <ul class="nav nav-secondary" style="flex: 1 1 auto;">
-                    {{-- Dashboard (semua role) --}}
-                    <li class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
-                        <a href="{{ route('dashboard') }}">
-                            <i class="fas fa-home"></i>
-                            <p>Dashboard</p>
+            <ul class="nav">
+                {{-- Dashboard (semua role) --}}
+                <li class="nav-item {{ request()->is('dashboard') ? 'active' : '' }}">
+                    <a href="{{ route('dashboard') }}">
+                        <i class="fas fa-home"></i>
+                        <p>Dashboard</p>
+                    </a>
+                </li>
+
+                {{-- Receptionist --}}
+                @if(auth()->user() && auth()->user()->role === 'receptionist')
+                    <li class="nav-item submenu {{ request()->is('form*') ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#receptionistMenu" role="button" aria-expanded="{{ request()->is('form*') ? 'true' : 'false' }}">
+                            <i class="fas fa-edit"></i>
+                            <p>Receptionist</p>
+                            <span class="caret"></span>
                         </a>
+                        <div class="collapse {{ request()->is('form*') ? 'show' : '' }}" id="receptionistMenu">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ request()->is('form/create') ? 'active' : '' }}">
+                                    <a href="{{ route('form.create') }}">
+                                        <span class="sub-item"><i class="fas fa-plus"></i> Buat Form Tamu</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->is('receptionist/deleteform') ? 'active' : '' }}">
+                                    <a href="{{ route('form.deleteScreen') }}">
+                                        <span class="sub-item"><i class="fas fa-trash"></i> Delete Form</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
+                @endif
 
-                    {{-- Receptionist --}}
-                    @if(auth()->user() && auth()->user()->role === 'receptionist')
-                        <li class="nav-item {{ request()->is('form/create') ? 'active' : '' }}">
-                            <a href="{{ route('form.create') }}">
-                                <i class="fas fa-edit"></i>
-                                <p>Buat Form Tamu</p>
-                            </a>
-                        </li>
-                        <li class="nav-item {{ request()->is('receptionist/deleteform') ? 'active' : '' }}">
-                            <a href="{{ route('form.deleteScreen') }}">
-                                <i class="fas fa-trash"></i>
-                                <p>Delete Form</p>
-                            </a>
-                        </li>
-                    @endif
-
-                    {{-- Secretary --}}
-                    @if(auth()->user() && auth()->user()->role === 'secretary')
-                        <li class="nav-item submenu {{ request()->is('secretary/dashboard') || request()->is('users*') ? 'active' : '' }}">
-                            <a data-bs-toggle="collapse" href="#secretaryMenu" role="button" aria-expanded="{{ request()->is('secretary/dashboard') || request()->is('users*') ? 'true' : 'false' }}">
-                                <i class="fas fa-user-tie"></i>
-                                <p>Secretary</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse {{ request()->is('secretary/dashboard') || request()->is('users*') ? 'show' : '' }}" id="secretaryMenu">
-                                <ul class="nav nav-collapse">
-                                    <li class="{{ request()->is('secretary/dashboard') ? 'active' : '' }}">
-                                        <a href="{{ route('secretary.dashboard') }}">
-                                            <span class="sub-item"><i class="fas fa-tachometer-alt"></i> Dashboard</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->is('users*') ? 'active' : '' }}">
-                                        <a href="{{ route('users.index') }}">
-                                            <span class="sub-item"><i class="fas fa-users-cog"></i> User Manager</span>
-                                        </a>
-                                        {{-- Tombol tambah user langsung di sidebar --}}
-                                        <a href="{{ route('users.create') }}" class="ms-4 d-block mt-1">
-                                            <span class="sub-item text-success"><i class="fas fa-user-plus"></i> Tambah User</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                    @endif
-
-                    {{-- Security --}}
-                    @if(auth()->user() && auth()->user()->role === 'security')
-                        <li class="nav-item submenu {{ request()->is('parkings*') ? 'active' : '' }}">
-                            <a data-bs-toggle="collapse" href="#securityMenu" role="button" aria-expanded="{{ request()->is('parkings*') ? 'true' : 'false' }}">
-                                <i class="fas fa-shield-alt"></i>
-                                <p>Security</p>
-                                <span class="caret"></span>
-                            </a>
-                            <div class="collapse {{ request()->is('parkings*') ? 'show' : '' }}" id="securityMenu">
-                                <ul class="nav nav-collapse">
-                                    <li class="{{ request()->is('parkings') ? 'active' : '' }}">
-                                        <a href="{{ route('parkings.index') }}">
-                                            <span class="sub-item"><i class="fas fa-parking"></i> Parking Management</span>
-                                        </a>
-                                    </li>
-                                    <li class="{{ request()->is('parkings/create') ? 'active' : '' }}">
-                                        <a href="{{ route('parkings.create') }}">
-                                            <span class="sub-item text-success"><i class="fas fa-plus"></i> Tambah Parkir</span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </li>
-                    @endif
-
-                    {{-- Management (role: management-business, management-government, management-enterprise) --}}
-                    @if(auth()->user() && str_starts_with(auth()->user()->role, 'management-'))
-                        <li class="nav-item {{ request()->is('management/dashboard*') ? 'active' : '' }}">
-                            <a href="{{ route('management.dashboard', explode('-', auth()->user()->role)[1] ?? 'business') }}">
-                                <i class="fas fa-briefcase"></i>
-                                <p class="d-flex align-items-center gap-1">
-                                    Dashboard
-                                    <span class="badge bg-info ms-2 text-capitalize text-truncate"
-                                          style="max-width: 90px; font-size:0.85em;"
-                                          data-bs-toggle="tooltip"
-                                          title="{{ ucfirst(explode('-', auth()->user()->role)[1] ?? 'Business') }}">
-                                        {{ ucfirst(Str::limit(explode('-', auth()->user()->role)[1] ?? 'Business', 12)) }}
-                                    </span>
-                                </p>
-                            </a>
-                        </li>
-                    @endif
-
-                    {{-- Chat --}}
-                    <li class="nav-item {{ request()->is('chat*') ? 'active' : '' }}">
-                        <a href="{{ route('chat.index') }}">
-                            <i class="fas fa-comments"></i>
-                            <p>Chat</p>
+                {{-- Secretary --}}
+                @if(auth()->user() && auth()->user()->role === 'secretary')
+                    <li class="nav-item submenu {{ request()->is('secretary/dashboard') || request()->is('users*') ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#secretaryMenu" role="button" aria-expanded="{{ request()->is('secretary/dashboard') || request()->is('users*') ? 'true' : 'false' }}">
+                            <i class="fas fa-user-tie"></i>
+                            <p>Secretary</p>
+                            <span class="caret"></span>
                         </a>
+                        <div class="collapse {{ request()->is('secretary/dashboard') || request()->is('users*') ? 'show' : '' }}" id="secretaryMenu">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ request()->is('secretary/dashboard') ? 'active' : '' }}">
+                                    <a href="{{ route('secretary.dashboard') }}">
+                                        <span class="sub-item"><i class="fas fa-tachometer-alt"></i> Dashboard</span>
+                                    </a>
+                                </li>
+                                <li class="submenu {{ request()->is('users*') ? 'active' : '' }}">
+                                    <a data-bs-toggle="collapse" href="#userManagerMenu" role="button" aria-expanded="{{ request()->is('users*') ? 'true' : 'false' }}">
+                                        <span class="sub-item"><i class="fas fa-users-cog"></i> User Manager</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <div class="collapse {{ request()->is('users*') ? 'show' : '' }}" id="userManagerMenu">
+                                        <ul class="nav nav-collapse">
+                                            <li class="{{ request()->is('users') ? 'active' : '' }}">
+                                                <a href="{{ route('users.index') }}">
+                                                    <span class="sub-item"><i class="fas fa-list"></i> Daftar User</span>
+                                                </a>
+                                            </li>
+                                            <li class="{{ request()->is('users/create') ? 'active' : '' }}">
+                                                <a href="{{ route('users.create') }}">
+                                                    <span class="sub-item text-success"><i class="fas fa-user-plus"></i> Tambah User</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
-                </ul>
-                {{-- Logout di paling bawah --}}
-                {{-- Sidebar Logout --}}
-                <ul class="nav nav-secondary mt-auto mb-3">
-                    <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}" id="logoutFormSidebar">
-                            @csrf
-                            <a href="#" onclick="document.getElementById('logoutFormSidebar').submit(); return false;">
-                                <i class="fas fa-sign-out-alt text-danger"></i>
-                                <p class="text-danger fw-bold mb-0">Logout</p>
-                            </a>
-                        </form>
+                @endif
+
+                {{-- Security --}}
+                @if(auth()->user() && auth()->user()->role === 'security')
+                    <li class="nav-item submenu {{ request()->is('parkings*') ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#securityMenu" role="button" aria-expanded="{{ request()->is('parkings*') ? 'true' : 'false' }}">
+                            <i class="fas fa-shield-alt"></i>
+                            <p>Security</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ request()->is('parkings*') ? 'show' : '' }}" id="securityMenu">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ request()->is('parkings') ? 'active' : '' }}">
+                                    <a href="{{ route('parkings.index') }}">
+                                        <span class="sub-item"><i class="fas fa-parking"></i> Parking Management</span>
+                                    </a>
+                                </li>
+                                <li class="{{ request()->is('parkings/create') ? 'active' : '' }}">
+                                    <a href="{{ route('parkings.create') }}">
+                                        <span class="sub-item text-success"><i class="fas fa-plus"></i> Tambah Parkir</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
-                </ul>
-            </div>
+                @endif
+
+                {{-- Management --}}
+                @if(auth()->user() && str_starts_with(auth()->user()->role, 'management-'))
+                    <li class="nav-item submenu {{ request()->is('management/dashboard*') ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#managementMenu" role="button" aria-expanded="{{ request()->is('management/dashboard*') ? 'true' : 'false' }}">
+                            <i class="fas fa-briefcase"></i>
+                            <p>Management</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ request()->is('management/dashboard*') ? 'show' : '' }}" id="managementMenu">
+                            <ul class="nav nav-collapse">
+                                <li class="{{ request()->is('management/dashboard*') ? 'active' : '' }}">
+                                    <a href="{{ route('management.dashboard', explode('-', auth()->user()->role)[1] ?? 'business') }}">
+                                        <span class="sub-item"><i class="fas fa-tachometer-alt"></i> Dashboard</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+
+                {{-- Customer Service --}}
+                @if(Auth::user() && Auth::user()->role === 'customer_service')
+                    <li class="nav-item submenu {{ request()->is('customerservice/modem*') || request()->is('queue/list*') || request()->is('customerservice/call-center*') ? 'active' : '' }}">
+                        <a data-bs-toggle="collapse" href="#customerServiceMenu" role="button" aria-expanded="{{ request()->is('customerservice/modem*') || request()->is('queue/list*') || request()->is('customerservice/call-center*') ? 'true' : 'false' }}">
+                            <i class="fas fa-headset"></i>
+                            <p>Customer Service</p>
+                            <span class="caret"></span>
+                        </a>
+                        <div class="collapse {{ request()->is('customerservice/modem*') || request()->is('queue/list*') || request()->is('customerservice/call-center*') ? 'show' : '' }}" id="customerServiceMenu">
+                            <ul class="nav nav-collapse">
+                                <li class="submenu {{ request()->is('customerservice/modem*') ? 'active' : '' }}">
+                                    <a data-bs-toggle="collapse" href="#modemMenu" role="button" aria-expanded="{{ request()->is('customerservice/modem*') ? 'true' : 'false' }}">
+                                        <span class="sub-item"><i class="fas fa-database"></i> Rekap Data Modem</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <div class="collapse {{ request()->is('customerservice/modem*') ? 'show' : '' }}" id="modemMenu">
+                                        <ul class="nav nav-collapse">
+                                            <li class="{{ request()->is('customerservice/modem') ? 'active' : '' }}">
+                                                <a href="{{ route('customerservice.modem.index') }}">
+                                                    <span class="sub-item"><i class="fas fa-table"></i> Rekap Data</span>
+                                                </a>
+                                            </li>
+                                            <li class="{{ request()->is('customerservice/modem/create') ? 'active' : '' }}">
+                                                <a href="{{ route('customerservice.modem.create') }}">
+                                                    <span class="sub-item text-success"><i class="fas fa-plus"></i> Tambah Data</span>
+                                                </a>
+                                            </li>
+                                            <li class="{{ request()->is('customerservice/modem/edit*') ? 'active' : '' }}">
+                                                <a href="{{ route('customerservice.modem.edit', 1) }}"> <!-- ID contoh -->
+                                                    <span class="sub-item text-warning"><i class="fas fa-edit"></i> Edit Data</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="{{ request()->is('queue/list*') ? 'active' : '' }}">
+                                    <a href="{{ route('customerservice.queue-list') }}">
+                                        <span class="sub-item"><i class="fas fa-list"></i> Daftar Nomor Antrian</span>
+                                    </a>
+                                </li>
+                                <li class="submenu {{ request()->is('customerservice/call-center*') ? 'active' : '' }}">
+                                    <a data-bs-toggle="collapse" href="#callCenterMenu" role="button" aria-expanded="{{ request()->is('customerservice/call-center*') ? 'true' : 'false' }}">
+                                        <span class="sub-item"><i class="fas fa-phone-alt"></i> Rekap Panggilan Call Center</span>
+                                        <span class="caret"></span>
+                                    </a>
+                                    <div class="collapse {{ request()->is('customerservice/call-center*') ? 'show' : '' }}" id="callCenterMenu">
+                                        <ul class="nav nav-collapse">
+                                            <li class="{{ request()->is('customerservice/call-center') ? 'active' : '' }}">
+                                                <a href="{{ route('customerservice.call-center.index') }}">
+                                                    <span class="sub-item"><i class="fas fa-table"></i> Rekap Data</span>
+                                                </a>
+                                            </li>
+                                            <li class="{{ request()->is('customerservice/call-center/create') ? 'active' : '' }}">
+                                                <a href="{{ route('customerservice.call-center.create') }}">
+                                                    <span class="sub-item text-success"><i class="fas fa-plus"></i> Tambah Data</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                @endif
+
+                {{-- Chat --}}
+                <li class="nav-item {{ request()->is('chat*') ? 'active' : '' }}">
+                    <a href="{{ route('chat.index') }}">
+                        <i class="fas fa-comments"></i>
+                        <p>Chat</p>
+                    </a>
+                </li>
+
+                {{-- Tombol logout --}}
+                <li class="nav-item">
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="text-danger">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <p>Logout</p>
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
+                </li>
+            </ul>
         </div>
     </div>
     <!-- End Sidebar -->
+    @endauth
 
     <div class="main-panel">
+        @auth
         <div class="main-header">
             <div class="main-header-logo">
                 <div class="logo-header" data-background-color="dark">
@@ -250,6 +347,7 @@
             </nav>
             <!-- End Navbar -->
         </div>
+        @endauth
 
         <div class="container">
             <div class="page-inner py-4">
@@ -259,10 +357,10 @@
 
         <footer class="footer">
             <div class="container-fluid d-flex justify-content-between">
-                <nav class="pull-left">
+                {{-- <nav class="pull-left">
                     <ul class="nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="http://www.themekita.com">ThemeKita</a>
+                            <a class="nav-link" href="http://www.google.com">Telkom</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contact</a>
@@ -271,7 +369,7 @@
                             <a class="nav-link" href="#">Licenses</a>
                         </li>
                     </ul>
-                </nav>
+                </nav> --}}
                 <div class="copyright">
                     Copyright@2025, Affiliation <i class="fa fa-heart heart text-danger"></i> with
                     <a href="https://www.telkom.co.id">Telkom Indonesia</a>
@@ -295,7 +393,7 @@
 <script src="{{ asset('assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugin/chart-circle/circles.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugin/datatables/datatables.min.js') }}"></script>
-<script src="{{ asset('assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script>
+{{-- <script src="{{ asset('assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}"></script> --}}
 <script src="{{ asset('assets/js/plugin/jsvectormap/jsvectormap.min.js') }}"></script>
 <script src="{{ asset('assets/js/plugin/jsvectormap/world.js') }}"></script>
 <script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>

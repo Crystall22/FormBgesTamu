@@ -30,6 +30,7 @@
                         <option value="management-government" {{ $user->role == 'management-government' ? 'selected' : '' }}>Management - Government</option>
                         <option value="management-enterprise" {{ $user->role == 'management-enterprise' ? 'selected' : '' }}>Management - Enterprise</option>
                         <option value="security" {{ $user->role == 'security' ? 'selected' : '' }}>Security</option>
+                        <option value="customer_service" {{ old('role') == 'customer_service' ? 'selected' : '' }}>Customer Service</option>
                     </select>
                 </div>
                 <div class="mb-3">

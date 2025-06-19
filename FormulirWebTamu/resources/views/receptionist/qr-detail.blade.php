@@ -31,9 +31,18 @@
                         <div class="text-muted mb-2">{{ $form->institution }}</div>
                         <div class="small text-muted">No. Invoice: {{ $form->invoice_number }}</div>
                     </div>
-                    <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('form.detail', ['id' => $form->id]) }}"
+                           class="btn btn-primary d-inline-flex align-items-center shadow-sm"
+                           style="gap: 0.5rem; border-radius: 0.5rem; font-weight: 500;">
+                            <i class="fa fa-info-circle"></i>
+                            Ke Detail
+                        </a>
+                    {{-- Tombol Ke Dashboard, hanya tampil jika user login --}}
+                    @auth
+                        <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">
                         <i class="fa fa-arrow-left me-1"></i> Kembali ke Dashboard
                     </a>
+                    @endauth
                 </div>
             </div>
         </div>
