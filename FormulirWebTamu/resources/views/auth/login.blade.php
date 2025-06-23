@@ -98,7 +98,9 @@
     <div class="login-wrapper">
         <!-- Logo Container (outside the form container on desktop, top inside the container on mobile) -->
         <div class="login-logo-container">
-            <img src="{{ asset('images/telkom2.png') }}" alt="Telkom" class="logo-img">
+            <a href="{{ route('landing') }}">
+                <img src="{{ asset('images/telkom2.png') }}" alt="Telkom" class="logo-img" style="cursor:pointer;">
+            </a>
         </div>
 
         <!-- Login Form Container -->

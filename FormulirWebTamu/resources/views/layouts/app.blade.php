@@ -216,11 +216,6 @@
                                                     <span class="sub-item text-success"><i class="fas fa-plus"></i> Tambah Data</span>
                                                 </a>
                                             </li>
-                                            <li class="{{ request()->is('customerservice/modem/edit*') ? 'active' : '' }}">
-                                                <a href="{{ route('customerservice.modem.edit', 1) }}"> <!-- ID contoh -->
-                                                    <span class="sub-item text-warning"><i class="fas fa-edit"></i> Edit Data</span>
-                                                </a>
-                                            </li>
                                         </ul>
                                     </div>
                                 </li>

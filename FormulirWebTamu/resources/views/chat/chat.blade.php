@@ -9,6 +9,24 @@
     @media (max-width: 991.98px) {
         .chat-fullscreen-row { min-height: calc(100vh - 90px); height: calc(100vh - 90px);}
     }
+    /* Custom style for image input */
+    .input-group .btn-image {
+        border-radius: 0;
+        background: #f8f9fa;
+        border: 1px solid #ced4da;
+        border-right: none;
+        padding: 0 12px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .input-group .btn-image:hover {
+        background: #e2e6ea;
+    }
+    .input-group input[type="file"] {
+        display: none;
+    }
 </style>
 <div class="row chat-fullscreen-row gx-0">
     <div class="col-12 d-flex flex-column px-0" style="height:100%;">
@@ -39,9 +57,15 @@
         <div class="border-top bg-white px-3 py-3">
             <form method="post" action="{{ route('chat.send', $user->id) }}" enctype="multipart/form-data">
                 @csrf
-                <div class="input-group input-group-lg">
+                <div class="input-group input-group-lg align-items-center">
                     <input type="text" name="message" class="form-control rounded-start-4 border-end-0" placeholder="Ketik pesan..." autocomplete="off">
-                    <input type="file" name="image" accept="image/*" class="form-control border-0" style="max-width:120px;">
+                    <label class="btn btn-image mb-0" title="Lampirkan gambar" style="position:relative;">
+                        <i class="fas fa-paperclip"></i>
+                        <input type="file" name="image" accept="image/*" id="chatImageInput">
+                    </label>
+                    <span id="imageSelectedIndicator" class="ms-2 text-success fw-semibold" style="display:none; font-size:1em;">
+                        <i class="fas fa-check-circle"></i> Gambar dipilih
+                    </span>
                     <button class="btn btn-success rounded-end-4 px-4" type="submit">
                         <i class="fas fa-paper-plane"></i>
                     </button>
@@ -61,7 +85,60 @@ function fetchChat() {
 }
 $(function(){
     setInterval(fetchChat, 3000);
+
+    // Indikator gambar dipilih
+    $('#chatImageInput').on('change', function() {
+        if (this.files && this.files.length > 0) {
+            $('#imageSelectedIndicator').show();
+        } else {
+            $('#imageSelectedIndicator').hide();
+        }
+    });
+
+    // Cegah submit chat kosong & validasi gambar
+    $('form[action*="chat/send"]').on('submit', function(e) {
+        var msg = $(this).find('input[name="message"]').val().trim();
+        var img = $(this).find('input[type="file"]')[0].files[0];
+        if (msg === "" && !img) {
+            e.preventDefault();
+            Swal.fire({
+                icon: 'warning',
+                title: 'Pesan kosong!',
+                text: 'Silakan ketik pesan atau lampirkan gambar.',
+                timer: 1800,
+                showConfirmButton: false
+            });
+            return;
+        }
+        if (img) {
+            const maxSize = 4 * 1024 * 1024; // 4MB
+            // Cek hanya tipe image/*
+            if (!img.type.startsWith('image/')) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'File bukan gambar!',
+                    text: 'Silakan pilih file gambar yang valid.',
+                    timer: 2200,
+                    showConfirmButton: false
+                });
+                return;
+            }
+            if (img.size > maxSize) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ukuran gambar terlalu besar!',
+                    text: 'Ukuran maksimal gambar adalah 4MB.',
+                    timer: 2200,
+                    showConfirmButton: false
+                });
+                return;
+            }
+        }
+    });
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 @endpush
 @endsection

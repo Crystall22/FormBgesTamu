@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/secretary/dashboard.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -86,4 +85,30 @@
         </div>
     @endif
 </div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    @if(session('success'))
+        Swal.fire({
+            title: 'Success!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    @endif
+
+    @if($errors->any())
+        Swal.fire({
+            title: 'Error!',
+            text: "{{ $errors->first() }}",
+            icon: 'error',
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'OK'
+        });
+    @endif
+</script>
+@endpush
+
 @endsection

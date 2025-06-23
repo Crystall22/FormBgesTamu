@@ -44,7 +44,8 @@
                     </thead>
                     <tbody>
                         @forelse($formsUnderReview as $form)
-                            <tr class="text-center align-middle">
+                            <tr class="text-center align-middle clickable-row"
+                                data-url="{{ route('dashboard.detail', $form->id) }}">
                                 <td>
                                     <i class="fas fa-user text-primary me-1"></i>
                                     {{ $form->guest_name ?? 'N/A' }}
@@ -117,6 +118,73 @@
                                     </a>
                                 </td>
                             </tr>
+
+                            <!-- Modal for Form Details -->
+                            <div class="modal fade" id="formDetailsModal-{{ $form->id }}" tabindex="-1" aria-labelledby="formDetailsModalLabel-{{ $form->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="formDetailsModalLabel-{{ $form->id }}">
+                                                <i class="fas fa-file-alt me-2"></i>Detail Form
+                                            </h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">
+                                                    <i class="fas fa-user me-1"></i>Nama Tamu
+                                                </label>
+                                                <p class="form-control-plaintext">
+                                                    {{ $form->guest_name ?? 'N/A' }}
+                                                </p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">
+                                                    <i class="fas fa-phone me-1"></i>Telepon
+                                                </label>
+                                                <p class="form-control-plaintext">
+                                                    {{ $form->guest_phone ?? 'N/A' }}
+                                                </p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">
+                                                    <i class="fas fa-building me-1"></i>Institusi
+                                                </label>
+                                                <p class="form-control-plaintext">
+                                                    {{ $form->institution ?? 'N/A' }}
+                                                </p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">
+                                                    <i class="fas fa-user-check me-1"></i>Diambil
+                                                </label>
+                                                <p class="form-control-plaintext">
+                                                    {{ $form->taken ?? 'N/A' }}
+                                                </p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">
+                                                    <i class="fas fa-sticky-note me-1"></i>Catatan
+                                                </label>
+                                                <p class="form-control-plaintext">
+                                                    {{ $form->note ?? 'N/A' }}
+                                                </p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-semibold">
+                                                    <i class="fas fa-file-pdf me-1"></i>File PDF
+                                                </label>
+                                                <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-file-pdf"></i> Lihat PDF
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-warning">
@@ -147,7 +215,8 @@
                     </thead>
                     <tbody>
                         @forelse($formsHistory as $form)
-                            <tr class="text-center align-middle">
+                            <tr class="text-center align-middle clickable-row"
+                                data-url="{{ route('dashboard.detail', $form->id) }}">
                                 <td>
                                     <i class="fas fa-user text-primary me-1"></i>
                                     {{ $form->guest_name ?? 'N/A' }}
@@ -202,5 +271,38 @@
         </div>
     </div>
 @endsection
+
+@push('styles')
+<style>
+    .clickable-row {
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .clickable-row:hover {
+        background: #f1f3f7 !important;
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.clickable-row').forEach(function(row) {
+            row.addEventListener('click', function(e) {
+                // Hindari klik pada tombol, link, atau elemen di dalam modal
+                if (
+                    e.target.tagName === 'BUTTON' ||
+                    e.target.closest('button') ||
+                    e.target.closest('.modal') ||
+                    e.target.tagName === 'A' ||
+                    e.target.closest('a') ||
+                    e.target.closest('form')
+                ) return;
+                window.location = this.dataset.url;
+            });
+        });
+    });
+</script>
+@endpush
 
 

@@ -2,7 +2,11 @@
 
 @section('content')
 <div class="container">
-    <h1>Pengembalian Mobil</h1>
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="javascript:history.back()" style="text-decoration: none; color: inherit;">
+            <h1>Pengembalian Mobil</h1>
+        </a>
+    </div>
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>

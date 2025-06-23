@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/users/index.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -43,11 +42,10 @@
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             @if(auth()->id() !== $user->id)
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline"
-                                  onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline" id="delete-user-{{ $user->id }}">
                                 @csrf
                                 @method('DELETE')
-                                <button class="btn btn-sm btn-danger">
+                                <button type="button" class="btn btn-sm btn-danger delete-btn" data-user-id="{{ $user->id }}">
                                     <i class="fas fa-trash"></i> Hapus
                                 </button>
                             </form>
@@ -64,4 +62,33 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Attach SweetAlert2 to the delete button
+    document.querySelectorAll('.delete-btn').forEach(function(button) {
+        button.addEventListener('click', function(e) {
+            const userId = this.getAttribute('data-user-id');
+            const form = document.getElementById('delete-user-' + userId);
+
+            // SweetAlert2 confirmation
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: 'Data user ini akan dihapus dan tidak dapat dikembalikan.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+</script>
+@endpush
 @endsection

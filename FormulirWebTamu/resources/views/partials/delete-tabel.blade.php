@@ -1,10 +1,9 @@
-{{-- filepath: resources/views/partials/delete-tabel.blade.php --}}
 @forelse($forms as $form)
 <tr>
     <td>
         <span class="badge bg-light text-dark">
             <i class="fas fa-calendar-day me-1"></i>
-            {{ $form->created_at ? $form->created_at->format('d-m-Y') : '-' }}
+            {{ $form->created_at ? $form->created_at->format('m-d-Y') : '-' }}
         </span>
     </td>
     <td>
@@ -25,13 +24,13 @@
     </td>
     <td>
         <div class="btn-group" role="group">
-            <a href="{{ route('dashboard', $form->id) }}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="View Detail">
+            <a href="{{ route('dashboard.detail', $form->id) }}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="View Detail">
                 <i class="fas fa-eye"></i>
             </a>
-            <form action="{{ route('form.destroy', $form->id) }}" method="POST" style="display:inline;">
+            <form action="{{ route('form.destroy', $form->id) }}" method="POST" id="delete-form-{{ $form->id }}" style="display:inline;">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete" onclick="return confirm('Yakin hapus data ini?')">
+                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete" onclick="confirmDeletion({{ $form->id }})">
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </form>
@@ -46,3 +45,27 @@
     </td>
 </tr>
 @endforelse
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Function to handle delete confirmation
+    function confirmDeletion(formId) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form after confirmation
+                document.getElementById('delete-form-' + formId).submit();
+            }
+        });
+    }
+</script>
+@endpush

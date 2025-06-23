@@ -61,12 +61,13 @@ class ChatController extends Controller
     {
         $request->validate([
             'message' => 'nullable|string',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|max:4096'
         ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('chat_images', 'public');
+            $image = $request->file('image');
+            $imagePath = $image->store('chat_images', 'public');
         }
 
         $chat = ChatMessage::create([

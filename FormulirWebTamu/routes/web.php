@@ -92,13 +92,15 @@ Route::middleware('auth')->group(function () {
         Route::post('/security/parkings', [ParkingController::class, 'store'])->name('parkings.store');
         Route::get('/security/parkings/{id}/edit', [ParkingController::class, 'edit'])->name('parkings.edit');
         Route::put('/security/parkings/{id}', [ParkingController::class, 'update'])->name('parkings.update');
-        Route::get('/security/parkings/deletef', [ParkingController::class, 'deleteScreen'])->name('parkings.deleteScreen');
+        Route::get('/security/parkings/{id}/details', [ParkingController::class, 'showDetails'])->name('parkings.details');
+        Route::put('/security/parkings/{id}/update-details', [ParkingController::class, 'updateDetails'])->name('parkings.updateDetails');
         Route::delete('/security/parkings/{id}', [ParkingController::class, 'destroy'])->name('parkings.destroy');
         Route::get('/security/parkings/pinjam', [ParkingController::class, 'pinjamForm'])->name('parkings.pinjam');
         Route::post('/security/parkings/borrow', [ParkingController::class, 'borrow'])->name('parkings.borrow');
         Route::get('/security/parkings/return', [ParkingController::class, 'returnForm'])->name('parkings.returnForm');
         Route::post('/security/parkings/return', [ParkingController::class, 'return'])->name('parkings.return');
     });
+
 
     Route::middleware([RoleMiddleware::class . ':customer_service'])->prefix('customerservice')->group(function () {
         Route::get('/modem', [CustomerServiceController::class, 'index'])->name('customerservice.modem.index');

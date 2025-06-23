@@ -13,7 +13,12 @@
             <div>
                 @if($msg->image_path)
                     <div class="mb-2">
-                        <img src="{{ asset('storage/'.$msg->image_path) }}" alt="Lampiran" class="img-fluid rounded" style="max-width:220px;">
+                        <a href="{{ asset('storage/'.$msg->image_path) }}" target="_blank">
+                            <img src="{{ asset('storage/'.$msg->image_path) }}"
+                                 alt="Lampiran"
+                                 class="img-fluid rounded"
+                                 style="max-width:320px; max-height:320px; width:auto; height:auto; object-fit:contain; background:#f8f9fa; border:1px solid #e0e0e0;">
+                        </a>
                     </div>
                 @endif
                 @if($msg->message)

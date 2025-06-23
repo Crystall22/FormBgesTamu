@@ -39,9 +39,9 @@ class LoginController extends Controller
             if ($user->role === 'security') {
                 return redirect()->route('parkings.index');
             }
-            return redirect()->route('dashboard');
+
             if ($user->role === 'customer_service') {
-                return redirect()->route('customerservice.index');
+                return redirect()->route('customerservice.modem.index');
             }
         }
 

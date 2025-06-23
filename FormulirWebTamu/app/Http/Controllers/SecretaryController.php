@@ -23,6 +23,7 @@ class SecretaryController extends Controller
 
     public function updateForm(Request $request, $id)
     {
+
         $request->validate([
             'note' => 'required|string|max:255',
             'management_type' => 'required|in:business,government,enterprise',

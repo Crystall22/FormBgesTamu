@@ -123,8 +123,10 @@ class FormController extends Controller
             $request->end_date . ' 23:59:59'
         ])->delete();
 
+
         return redirect()->route('form.deleteScreen')->with('success', $deleted . ' data berhasil dihapus.');
     }
+
 
     public function destroy($id)
     {

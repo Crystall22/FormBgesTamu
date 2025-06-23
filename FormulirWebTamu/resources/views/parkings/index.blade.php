@@ -10,7 +10,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-4 px-2">
         <h3 class="fw-bold mb-0">
-            <i class="fas fa-parking text-primary me-2"></i>
+            <i class="fas fa-parking text-primary me-2"></i> <!-- Static parking logo -->
             Parking List
         </h3>
         <div>
@@ -27,7 +27,9 @@
     </div>
 
     <div class="mb-3 px-2">
-        <button id="toggleViewBtn" class="btn btn-outline-primary btn-sm">Toggle Table View</button>
+        <button id="toggleViewBtn" class="btn btn-outline-primary btn-sm">
+            <i id="toggleIcon" class="fas fa-th"></i>  <!-- Default grid icon -->
+        </button>
     </div>
 
     <div id="cardView" class="row g-3">
@@ -138,10 +140,23 @@
 
         // Toggle view
         document.getElementById('toggleViewBtn').addEventListener('click', function () {
-            document.getElementById('cardView').style.display =
-                document.getElementById('cardView').style.display === 'none' ? 'flex' : 'none';
-            document.getElementById('tableView').style.display =
-                document.getElementById('tableView').style.display === 'none' ? 'block' : 'none';
+            const cardView = document.getElementById('cardView');
+            const tableView = document.getElementById('tableView');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (cardView.style.display === 'none') {
+                cardView.style.display = 'flex';
+                tableView.style.display = 'none';
+                toggleIcon.classList.remove('fa-th-list');  // List icon
+                toggleIcon.classList.add('fa-th');  // Grid icon
+                toggleIcon.style.color = '#007bff';  // Set blue color for grid view
+            } else {
+                cardView.style.display = 'none';
+                tableView.style.display = 'block';
+                toggleIcon.classList.remove('fa-th');  // Grid icon
+                toggleIcon.classList.add('fa-th-list');  // List icon
+                toggleIcon.style.color = '#28a745';  // Set green color for list view
+            }
         });
 
         // Search function

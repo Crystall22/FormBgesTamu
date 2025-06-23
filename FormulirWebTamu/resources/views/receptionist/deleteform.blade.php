@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/receptionist/deleteform.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -31,8 +30,7 @@
 
     <div class="card shadow-lg">
         <div class="card-body">
-            <!-- Fitur Hapus Berdasarkan Periode -->
-            <form action="{{ route('form.bulkDelete') }}" method="POST" class="row g-2 align-items-end mb-4">
+            <form action="{{ route('form.bulkDelete') }}" method="POST" class="row g-2 align-items-end mb-4" id="bulk-delete-form">
                 @csrf
                 <div class="col-md-3">
                     <label for="start_date" class="form-label mb-1">Dari Tanggal</label>
@@ -43,13 +41,12 @@
                     <input type="date" name="end_date" id="end_date" class="form-control" required value="{{ request('end_date') }}">
                 </div>
                 <div class="col-md-3">
-                    <button type="submit" class="btn btn-danger w-100">
+                    <button type="button" class="btn btn-danger w-100" id="bulk-delete-btn">
                         <i class="fas fa-trash-alt me-1"></i> Hapus Berdasarkan Periode
                     </button>
                 </div>
             </form>
 
-            <!-- Search Bar and Sorter -->
             <div class="row mb-4 align-items-center g-2">
                 <div class="col-md-8">
                     <div class="input-group">
@@ -65,12 +62,11 @@
                 </div>
             </div>
 
-            <!-- Table -->
             <div class="table-responsive mb-4">
                 <table class="table table-striped table-hover align-middle">
                     <thead class="table-dark">
                         <tr>
-                            <th><i class="fas fa-calendar-day"></i> Date</th>
+                            <th><i class="fas fa-calendar-day"></i> Date (MM-DD-YYYY)</th>
                             <th><i class="fas fa-user"></i> Guest Name</th>
                             <th><i class="fas fa-building"></i> Institution</th>
                             <th><i class="fas fa-user-check"></i> Taken By</th>
@@ -84,7 +80,6 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
             <div class="d-flex justify-content-center flex-wrap gap-2">
                 @if ($forms->onFirstPage())
                     <a class="btn btn-primary btn-sm disabled" href="#">«</a>
@@ -109,7 +104,36 @@
 </div>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    document.getElementById('bulk-delete-btn').addEventListener('click', function() {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Semua data dalam periode ini akan dihapus!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('bulk-delete-form').submit();
+            }
+        });
+    });
+
+    // Success message when the bulk delete action is completed
+    @if(session('success'))
+        Swal.fire({
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            icon: 'success',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    @endif
+
     document.getElementById('search-input').addEventListener('input', function() {
         let searchQuery = this.value;
         let sortQuery = new URLSearchParams(window.location.search).get('sort') || 'desc';
@@ -133,4 +157,5 @@
     });
 </script>
 @endpush
+
 @endsection

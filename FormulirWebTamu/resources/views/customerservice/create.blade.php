@@ -7,7 +7,7 @@
             <i class="fas fa-plus text-primary me-2"></i> Tambah Data Modem
         </div>
         <div class="card-body">
-            <form action="{{ route('customerservice.modem.store') }}" method="POST">
+            <form id="modemForm" action="{{ route('customerservice.modem.store') }}" method="POST">
                 @csrf
                 <div class="mb-3">
                     <label for="tanggal_terima" class="form-label">Tanggal Terima</label>
@@ -44,7 +44,7 @@
                     <input type="text" name="stb_id" id="stb_id" class="form-control" maxlength="16" required>
                 </div>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary px-4">
+                    <button type="submit" class="btn btn-primary px-4" id="btnSimpan">
                         <i class="fas fa-save"></i> Simpan
                     </button>
                     <a href="{{ route('customerservice.modem.index') }}" class="btn btn-secondary ms-2 px-4">
@@ -57,12 +57,15 @@
 </div>
 
 @push('scripts')
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const providerSelect = document.getElementById('provider_modem');
         const serialContainer = document.getElementById('serial_number_container');
         const serialInput = document.getElementById('serial_number_modem');
         const manualProviderContainer = document.getElementById('manual_provider_container');
+        const form = document.getElementById('modemForm');
 
         providerSelect.addEventListener('change', function () {
             const provider = this.value;
@@ -89,6 +92,24 @@
                     serialInput.placeholder = 'Masukkan 12 digit';
                 }
             }
+        });
+
+        // SweetAlert konfirmasi sebelum submit
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Simpan Data?',
+                text: "Pastikan data sudah benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Simpan',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
     });
 </script>
