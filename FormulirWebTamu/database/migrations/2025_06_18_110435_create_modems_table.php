@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('id_pelanggan');
             $table->string('serial_number_modem');
             $table->string('provider_modem')->default('other'); // Default to 'other' if not specified
+            $table->string('manual_provider')->nullable(); // <--- Tambahkan ini
             $table->string('stb_id');
             $table->timestamps();
         });

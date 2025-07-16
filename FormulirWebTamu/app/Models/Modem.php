@@ -13,6 +13,7 @@ class Modem extends Model
         'tanggal_keluar',
         'id_pelanggan',
         'provider_modem',
+        'manual_provider',
         'serial_number_modem',
         'stb_id',
     ];

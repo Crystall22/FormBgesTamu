@@ -203,6 +203,70 @@
         max-height: 70px;
       }
     }
+
+    @media (max-width: 991.98px) {
+      .navbar ul {
+        display: none;
+        flex-direction: column;
+        align-items: flex-start;
+        background: #fff;
+        position: absolute;
+        top: 100%;
+        right: 20px;
+        left: auto;
+        min-width: 160px;
+        width: max-content;
+        box-shadow: 0 8px 24px rgba(44,62,80,0.08);
+        z-index: 999;
+        padding: 12px 0;
+        border-radius: 8px;
+        border: 1.5px solid #e42613;
+      }
+      .navbar ul.show {
+        display: flex;
+      }
+      .navbar ul li {
+        width: 100%;
+      }
+      .navbar ul li a {
+        display: block;
+        width: 100%;
+        padding: 10px 24px;
+        font-size: 1.08em;
+        font-weight: 600;
+        color: #212529;
+        border-radius: 0;
+        border-left: 3px solid transparent;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .navbar ul li a:hover,
+      .navbar ul li a.active {
+        background: #f8f9fa;
+        border-left: 3px solid #e42613;
+        color: #e42613;
+      }
+      .navbar .navbar-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 2rem;
+        color: #e42613;
+        margin-left: 16px;
+        cursor: pointer;
+      }
+    }
+    @media (min-width: 992px) {
+      .navbar .navbar-toggle {
+        display: none;
+      }
+    }
+
+    /* Tambahan style untuk About Us */
+    .about p {
+      line-height: 1.7 !important;
+      letter-spacing: 0.05em;
+      font-size: 1.14em;
+    }
   </style>
 </head>
 
@@ -214,10 +278,14 @@
       <img src="{{ asset('images/telkomhand.png') }}" alt="Logo">
       <h4 class="brand-name">Telkom Indonesia</h4>
     </div>
-    <nav id="navbar" class="navbar">
+    <nav id="navbar" class="navbar position-relative">
+      <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle navigation">
+        <i class="bi bi-list"></i>
+      </button>
       <ul>
         <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
         <li><a class="nav-link scrollto" href="#about">About</a></li>
+        <li><a class="nav-link scrollto" href="#location">Location</a></li>
         <li><a class="nav-link scrollto" href="#features">Features</a></li>
         <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
         <li><a class="getstarted scrollto" href="{{ route('login') }}">Login</a></li>
@@ -254,15 +322,49 @@
   {{-- ======= About Section ======= --}}
   <section id="about" class="about">
     <div class="container">
+      <div class="section-title mb-4">
+        <h2>About Us</h2>
+        <p>
+          PT Telkom Indonesia adalah perusahaan teknologi terkemuka yang menyediakan layanan telekomunikasi, internet cepat, dan solusi cloud di seluruh Indonesia.
+        </p>
+      </div>
       <div class="row">
-        <div class="col-lg-6 order-1 order-lg-2">
+        <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
           <img src="{{ asset('assets2/img/about-2.webp') }}" class="img-fluid" alt="About Us">
         </div>
         <div class="col-lg-6 pt-4 pt-lg-0 order-2 order-lg-1 content">
-          <h3>About Us</h3>
+         <h3>Witel Sumbagsel</h3>
           <p>
-            PT Telkom Indonesia adalah perusahaan teknologi terkemuka di Indonesia yang menyediakan solusi telekomunikasi, internet cepat, dan layanan cloud untuk memenuhi kebutuhan komunikasi dan teknologi digital Anda.
-          </p>
+            Melalui unit Witel Sumbagsel, Telkom hadir untuk mendukung digitalisasi di wilayah Sumatera Selatan, Lampung, dan Bengkulu. Kami menghadirkan konektivitas andal dan solusi digital terintegrasi bagi masyarakat, pelaku usaha, dan institusi pemerintahan.
+            Dengan jaringan luas dan komitmen tinggi, Telkom Witel Sumbagsel siap menjadi mitra terpercaya dalam mempercepat transformasi digital di Indonesia.
+        </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{-- ======= Location Section ======= --}}
+  <section id="location" class="location">
+    <div class="container">
+      <div class="section-title mb-4">
+        <h2>Location</h2>
+        <p>Temukan lokasi kantor kami di Palembang pada peta berikut:</p>
+      </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-10">
+          <div style="border-radius: 16px; overflow: hidden; box-shadow: 0 2px 16px rgba(44,62,80,0.08);">
+            <iframe
+              src="https://www.openstreetmap.org/export/embed.html?bbox=104.7475,-2.9915,104.7575,-2.9815&amp;layer=mapnik&amp;marker=-2.9865,104.7525"
+              style="width: 100%; height: 320px; border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <div class="small text-center mt-2">
+              <a href="https://maps.app.goo.gl/Qd2A7MmT2QBuXnm99" target="_blank" rel="noopener">
+                Lihat lokasi di Google Map
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -371,6 +473,24 @@
           e.preventDefault();
           document.querySelector(href).scrollIntoView({ behavior: 'smooth' });
         }
+      });
+    });
+
+    // Dropdown navbar for mobile
+    document.addEventListener('DOMContentLoaded', function () {
+      const toggle = document.getElementById('navbarToggle');
+      const navUl = document.querySelector('.navbar ul');
+      toggle.addEventListener('click', function () {
+        navUl.classList.toggle('show');
+      });
+
+      // Optional: close menu after click (for better UX)
+      document.querySelectorAll('.navbar ul li a').forEach(link => {
+        link.addEventListener('click', function () {
+          if (window.innerWidth < 992) {
+            navUl.classList.remove('show');
+          }
+        });
       });
     });
   </script>

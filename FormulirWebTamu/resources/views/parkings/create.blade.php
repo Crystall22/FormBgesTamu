@@ -28,9 +28,22 @@
 
         <fieldset class="form-group">
             <label for="license_number">License Number</label>
-            <input type="text" class="form-control" id="license_number" name="license_number" required
+            <input type="text"
+                   class="form-control"
+                   id="license_number"
+                   name="license_number"
+                   required
                    pattern="[A-Za-z]{1,2}\d{1,4}[A-Za-z]{0,4}"
-                   title="Nomor Polisi Harus Mengikuti Standar e.g(BG1111AA)" placeholder="Masukkan nomor polisi">
+                   title="Nomor Polisi Harus Mengikuti Standar e.g(BG1111AA)"
+                   placeholder="Masukkan nomor polisi"
+                   style="text-transform:uppercase;"
+                   oninput="if(this.value) {
+                       var start = this.selectionStart, end = this.selectionEnd;
+                       this.value = this.value.toUpperCase();
+                       this.setSelectionRange(start, end);
+                   }"
+                   autocomplete="off"
+                   value="{{ old('license_number') }}">
         </fieldset>
 
         <fieldset class="form-group">
@@ -41,4 +54,10 @@
         <button type="submit" class="btn btn-success">Add Parking</button>
     </form>
 </div>
+
+<style>
+    input::placeholder {
+        text-transform: none !important;
+    }
+</style>
 @endsection

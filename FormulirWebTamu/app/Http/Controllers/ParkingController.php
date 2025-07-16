@@ -127,7 +127,7 @@ class ParkingController extends Controller
 
         Parking::create([
             'vehicle_name' => $request->vehicle_name,
-            'license_number' => $request->license_number,
+            'license_number' => strtoupper($request->license_number),
             'slot' => $request->slot,
             'status' => 'available',
         ]);
@@ -162,6 +162,7 @@ class ParkingController extends Controller
             'borrower_name' => $request->borrower_name,
             'parking_location' => $request->parking_location,
             'borrower_position' => $borrower_position,
+            'license_number' => strtoupper($request->license_number),
         ]);
 
         return redirect()->route('parkings.index')->with('success', 'Parking record updated successfully.');

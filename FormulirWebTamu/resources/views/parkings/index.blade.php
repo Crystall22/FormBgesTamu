@@ -81,9 +81,10 @@
                                 <th class="text-center" style="width:40px;">No</th>
                                 <th>No Plat</th>
                                 <th>Nama Peminjam</th>
+                                <th>Jabatan</th>
                                 <th>No Parkir</th>
+                                <th>Tujuan</th>
                                 <th>Status</th>
-                                <th class="text-center" style="width:90px;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="parkingTableBody">
@@ -97,7 +98,13 @@
                                         {{ $parking->borrower_name ?? '-' }}
                                     </td>
                                     <td>
+                                        {{ $parking->borrower_position ?? '-' }}
+                                    </td>
+                                    <td>
                                         <span class="badge bg-light text-dark border">{{ $parking->slot ?? '-' }}</span>
+                                    </td>
+                                    <td>
+                                        {{ $parking->purpose ?? '-' }}
                                     </td>
                                     <td>
                                         <span class="badge
@@ -105,16 +112,11 @@
                                             {{ $parking->status == 'available' ? 'Tersedia' : 'Dipinjam' }}
                                         </span>
                                     </td>
-                                    <td class="text-center">
-                                        <a href="{{ route('parkings.edit', $parking->id) }}" class="btn btn-sm btn-icon btn-primary" data-bs-toggle="tooltip" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </td>
                                 </tr>
                             @endforeach
                             @if(count($parkings) == 0)
                                 <tr>
-                                    <td colspan="6" class="text-center text-muted py-4">
+                                    <td colspan="7" class="text-center text-muted py-4">
                                         <i class="fas fa-inbox fa-2x mb-2"></i>
                                         <div>Tidak ada data parkir</div>
                                     </td>

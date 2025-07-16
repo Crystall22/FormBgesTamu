@@ -76,15 +76,36 @@
 </div>
 @push('scripts')
 <script>
-function fetchChat() {
+function fetchChat(scrollToBottom = false) {
+    var chatBody = document.getElementById('chatBody');
+    // Simpan posisi scroll sebelum update
+    var prevScroll = chatBody ? chatBody.scrollTop : 0;
+    var prevScrollHeight = chatBody ? chatBody.scrollHeight : 0;
+
     $.get("{{ route('chat.fetch', $user->id) }}", function(res) {
         $('#chatBody .px-3').replaceWith(res.html);
-        var chatBody = document.getElementById('chatBody');
-        if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+
+        // Setelah update, atur posisi scroll
+        if (chatBody) {
+            if (scrollToBottom) {
+                chatBody.scrollTop = chatBody.scrollHeight;
+            } else {
+                // Pertahankan posisi relatif sebelumnya
+                var newScrollHeight = chatBody.scrollHeight;
+                chatBody.scrollTop = prevScroll + (newScrollHeight - prevScrollHeight);
+            }
+        }
     });
 }
+
 $(function(){
-    setInterval(fetchChat, 3000);
+    // Saat pertama kali load, scroll ke bawah
+    var chatBody = document.getElementById('chatBody');
+    if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
+
+    setInterval(function() {
+        fetchChat(false);
+    }, 3000);
 
     // Indikator gambar dipilih
     $('#chatImageInput').on('change', function() {
@@ -112,7 +133,6 @@ $(function(){
         }
         if (img) {
             const maxSize = 4 * 1024 * 1024; // 4MB
-            // Cek hanya tipe image/*
             if (!img.type.startsWith('image/')) {
                 e.preventDefault();
                 Swal.fire({
@@ -136,6 +156,10 @@ $(function(){
                 return;
             }
         }
+        // Scroll ke bawah setelah submit (pesan baru)
+        setTimeout(function() {
+            fetchChat(true);
+        }, 500);
     });
 });
 </script>

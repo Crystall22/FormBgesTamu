@@ -2,6 +2,23 @@
 
 @section('content')
 <div class="page-inner py-4">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Tampilkan error --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="d-flex justify-content-between align-items-center mb-4 px-2">
         <h3 class="fw-bold mb-0">
             <i class="fas fa-database text-primary me-2"></i>
@@ -21,11 +38,13 @@
             <div class="row mb-3">
                 <div class="col-md-5">
                     <label for="start_date" class="form-label">Tanggal Mulai</label>
-                    <input type="date" id="start_date" class="form-control">
+                    <input type="date" id="start_date" class="form-control @error('start_date') is-invalid @enderror"
+                        name="start_date" value="{{ old('start_date') }}">
                 </div>
                 <div class="col-md-5">
                     <label for="end_date" class="form-label">Tanggal Akhir</label>
-                    <input type="date" id="end_date" class="form-control">
+                    <input type="date" id="end_date" class="form-control @error('end_date') is-invalid @enderror"
+                        name="end_date" value="{{ old('end_date') }}">
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button id="filterButton" class="btn btn-primary w-100">Filter</button>
@@ -49,8 +68,12 @@
                         @foreach ($modems as $i => $modem)
                             <tr>
                                 <td class="text-center">{{ $i + 1 }}</td>
-                                <td>{{ $modem->tanggal_terima }}</td>
-                                <td>{{ $modem->tanggal_keluar ?? '-' }}</td>
+                                <td data-order="{{ $modem->tanggal_terima ? \Carbon\Carbon::parse($modem->tanggal_terima)->format('Y-m-d') : '' }}">
+                                    {{ $modem->tanggal_terima }}
+                                </td>
+                                <td data-order="{{ $modem->tanggal_keluar ? \Carbon\Carbon::parse($modem->tanggal_keluar)->format('Y-m-d') : '' }}">
+                                    {{ $modem->tanggal_keluar ?? '-' }}
+                                </td>
                                 <td>{{ $modem->id_pelanggan }}</td>
                                 <td>{{ $modem->provider_modem === 'other' ? $modem->manual_provider : ucfirst($modem->provider_modem) }}</td>
                                 <td>{{ $modem->serial_number_modem }}</td>
@@ -79,11 +102,25 @@
 @push('scripts')
 <script>
     $(document).ready(function () {
+        let errorShown = false;
         const table = $('#modem-datatables').DataTable();
 
-        $('#filterButton').on('click', function () {
+        $('#filterButton').on('click', function (e) {
+            errorShown = false;
             const startDate = $('#start_date').val();
             const endDate = $('#end_date').val();
+
+            // Validasi input filter sebelum draw
+            if (startDate && endDate && endDate < startDate) {
+                e.preventDefault();
+                $('#start_date').addClass('is-invalid');
+                $('#end_date').addClass('is-invalid');
+                alert('Tanggal akhir tidak boleh lebih awal dari tanggal mulai!');
+                return false;
+            } else {
+                $('#start_date').removeClass('is-invalid');
+                $('#end_date').removeClass('is-invalid');
+            }
 
             table.draw();
         });
@@ -91,7 +128,22 @@
         $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
             const startDate = $('#start_date').val();
             const endDate = $('#end_date').val();
-            const tanggalTerima = data[1]; // Index kolom Tanggal Terima
+            const tanggalTerima = data[1];
+            const tanggalKeluar = data[2];
+
+            // Validasi tanggal keluar < tanggal terima
+            if (
+                tanggalTerima &&
+                tanggalKeluar &&
+                tanggalKeluar !== '-' &&
+                tanggalKeluar < tanggalTerima
+            ) {
+                if (!errorShown) {
+                    errorShown = true;
+                    alert('Tanggal keluar tidak boleh lebih awal dari tanggal terima pada baris ke-' + (dataIndex + 1));
+                }
+                return false;
+            }
 
             if (startDate && tanggalTerima < startDate) return false;
             if (endDate && tanggalTerima > endDate) return false;

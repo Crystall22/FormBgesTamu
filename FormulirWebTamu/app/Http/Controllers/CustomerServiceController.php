@@ -23,6 +23,7 @@ class CustomerServiceController extends Controller
     {
         $request->validate([
             'tanggal_terima' => 'required|date',
+            'tanggal_keluar' => 'nullable|date|after_or_equal:tanggal_terima',
             'id_pelanggan' => 'required|string',
             'provider_modem' => 'required|in:huawei,zte,fiberhome,other',
             'serial_number_modem' => [
@@ -58,12 +59,35 @@ class CustomerServiceController extends Controller
     {
         $request->validate([
             'tanggal_terima' => 'required|date',
+            'tanggal_keluar' => 'nullable|date|after_or_equal:tanggal_terima',
             'id_pelanggan' => 'required|string',
             'serial_number_modem' => 'required|string',
             'stb_id' => 'required|string',
+            'provider_modem' => 'required',
+            'manual_provider' => 'nullable|string|max:255',
         ]);
+
         $modem = Modem::findOrFail($id);
-        $modem->update($request->all());
+
+        $data = $request->all();
+
+        if ($request->provider_modem === 'other') {
+            $data['manual_provider'] = $request->manual_provider;
+        } else {
+            $data['manual_provider'] = null;
+        }
+
+        $modem->update($data);
+
+        // Jika AJAX, balas JSON
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Data modem berhasil diupdate.'
+            ]);
+        }
+
+        // Jika bukan AJAX, balas redirect biasa
         return redirect()->route('customerservice.modem.index')->with('success', 'Data modem berhasil diupdate.');
     }
 

@@ -12,7 +12,7 @@ class ModemExport implements FromCollection, WithHeadings
      */
     public function collection()
     {
-        return Modem::select('tanggal_terima', 'tanggal_keluar', 'id_pelanggan', 'provider_modem', 'serial_number_modem', 'stb_id')->get();
+        return Modem::select('tanggal_terima', 'tanggal_keluar', 'purpose', 'provider_modem', 'serial_number_modem', 'stb_id')->get();
     }
 
     /**

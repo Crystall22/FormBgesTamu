@@ -52,6 +52,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/receptionist/deleteform', [FormController::class, 'deleteScreen'])->name('form.deleteScreen');
         Route::delete('/form/{id}', [FormController::class, 'destroy'])->name('form.destroy');
         Route::post('/receptionist/delete-period', [FormController::class, 'bulkDelete'])->name('form.bulkDelete');
+        Route::post('/dashboard/archive/{id}', [FormController::class, 'archive'])->name('dashboard.archive');
+        Route::get('/dashboard/export', [FormController::class, 'export'])->name('dashboard.export');
     });
 
     // Secretary

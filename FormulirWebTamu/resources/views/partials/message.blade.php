@@ -32,9 +32,9 @@
                     {{ $msg->created_at->format('H:i d-m-Y') }}
                     @if($msg->from_user_id == auth()->id())
                         @if($msg->is_read)
-                            <i class="fas fa-check-double ms-1" style="color:#2196f3"></i>
+                            <i class="fas fa-check-double ms-1" style="color:#2196f3" title="Dibaca"></i>
                         @else
-                            <i class="fas fa-check-double ms-1 text-secondary"></i>
+                            <i class="fas fa-check ms-1 text-secondary" title="Terkirim"></i>
                         @endif
                     @endif
                 </div>
