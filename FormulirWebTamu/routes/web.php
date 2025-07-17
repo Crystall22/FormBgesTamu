@@ -53,7 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/form/{id}', [FormController::class, 'destroy'])->name('form.destroy');
         Route::post('/receptionist/delete-period', [FormController::class, 'bulkDelete'])->name('form.bulkDelete');
         Route::post('/dashboard/archive/{id}', [FormController::class, 'archive'])->name('dashboard.archive');
-        Route::get('/dashboard/export', [FormController::class, 'export'])->name('dashboard.export');
+        Route::get('/dashboard/export', [FormController::class, 'exportArsip'])->name('dashboard.export');
     });
 
     // Secretary
@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/secretary/form/{id}', [SecretaryController::class, 'showForm'])->name('secretary.form');
         Route::post('/secretary/form/{id}', [SecretaryController::class, 'updateForm'])->name('secretary.update');
         Route::get('/secretary/download-pdf/{id}', [SecretaryController::class, 'downloadPdf'])->name('secretary.download.pdf');
+        Route::get('/secretary/check-new-form', [SecretaryController::class, 'checkNewForm'])->name('secretary.checkNewForm');
+        Route::get('/secretary/notif-new-forms', [SecretaryController::class, 'notifNewForms'])->name('secretary.notifNewForms');
 
         // User management (hanya secretary)
         Route::get('/users', [UserController::class, 'index'])->name('users.index');

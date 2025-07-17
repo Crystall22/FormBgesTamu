@@ -22,6 +22,20 @@
                 <div class="fw-bold">{{ $form->guest_name }}</div>
                 <small>{{ $form->institution }}</small>
             </div>
+            {{-- Kategori Management di pojok kanan atas --}}
+            @if($form->forwarded_to_management)
+                <span class="ms-auto">
+                    @if ($form->forwarded_to_management_type === 'business')
+                        <span class="badge bg-info text-dark">Business</span>
+                    @elseif ($form->forwarded_to_management_type === 'government')
+                        <span class="badge bg-primary">Government</span>
+                    @elseif ($form->forwarded_to_management_type === 'enterprise')
+                        <span class="badge bg-dark">Enterprise</span>
+                    @else
+                        <span class="badge bg-secondary">-</span>
+                    @endif
+                </span>
+            @endif
         </div>
         <div class="card-body">
             <div class="row mb-2">
@@ -55,48 +69,65 @@
                 <span class="fw-semibold">Purpose:</span>
                 <span class="text-muted">{{ $form->purpose }}</span>
             </div>
+            <div class="mb-2">
+                <i class="fas fa-info-circle text-primary me-1"></i>
+                <span class="fw-semibold">Status:</span>
+                @if ($form->status === 'approved')
+                    <span class="badge bg-success">Accepted</span>
+                @elseif ($form->status === 'rejected')
+                    <span class="badge bg-danger">Rejected</span>
+                @elseif ($form->status === 'under_review')
+                    <span class="badge bg-warning text-dark">Under Review</span>
+                @else
+                    <span class="badge bg-secondary">-</span>
+                @endif
+            </div>
             <div class="d-flex gap-2 mt-4">
-                <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-info btn-sm">
-                    <i class="fas fa-file-pdf me-1"></i> View PDF
-                </a>
-                <a href="{{ route('secretary.download.pdf', ['id' => $form->id]) }}" class="btn btn-outline-secondary btn-sm">
-                    <i class="fas fa-download me-1"></i> Download PDF
-                </a>
+                @if($form->pdf_file)
+                    <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-info btn-sm">
+                        <i class="fas fa-file-pdf me-1"></i> View PDF
+                    </a>
+                    <a href="{{ route('secretary.download.pdf', ['id' => $form->id]) }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-download me-1"></i> Download PDF
+                    </a>
+                @endif
             </div>
         </div>
     </div>
 
     {{-- Note and Forward Form --}}
-    <form action="{{ route('secretary.update', $form->id) }}" method="POST">
-        @csrf
-        <div class="card shadow">
-            <div class="card-header bg-secondary text-white">
-                <i class="fas fa-sticky-note me-2"></i>
-                Add Note & Forward to Management
-            </div>
-            <div class="card-body">
-                <div class="form-group mb-3">
-                    <label for="note" class="form-label fw-semibold">
-                        <i class="fas fa-comment-dots me-1 text-primary"></i>Note
-                    </label>
-                    <textarea name="note" id="note" class="form-control" rows="4" required>{{ old('note', $form->note ?? '') }}</textarea>
+    @if(!request('readonly'))
+        <form action="{{ route('secretary.update', $form->id) }}" method="POST">
+            @csrf
+            <div class="card shadow">
+                <div class="card-header bg-secondary text-white">
+                    <i class="fas fa-sticky-note me-2"></i>
+                    Add Note & Forward to Management
                 </div>
-                <div class="form-group mb-4">
-                    <label for="management_type" class="form-label fw-semibold">
-                        <i class="fas fa-share-square me-1 text-success"></i>Forward To Management
-                    </label>
-                    <select name="management_type" id="management_type" class="form-select" required>
-                        <option value="" disabled selected>Select Management</option>
-                        <option value="business" {{ (old('management_type', $form->forwarded_to_management_type ?? '') == 'business') ? 'selected' : '' }}>Business</option>
-                        <option value="government" {{ (old('management_type', $form->forwarded_to_management_type ?? '') == 'government') ? 'selected' : '' }}>Government</option>
-                        <option value="enterprise" {{ (old('management_type', $form->forwarded_to_management_type ?? '') == 'enterprise') ? 'selected' : '' }}>Enterprise</option>
-                    </select>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label for="note" class="form-label fw-semibold">
+                            <i class="fas fa-comment-dots me-1 text-primary"></i>Note
+                        </label>
+                        <textarea name="note" id="note" class="form-control" rows="4" required>{{ old('note', $form->note ?? '') }}</textarea>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label for="management_type" class="form-label fw-semibold">
+                            <i class="fas fa-share-square me-1 text-success"></i>Forward To Management
+                        </label>
+                        <select name="management_type" id="management_type" class="form-select" required>
+                            <option value="" disabled selected>Select Management</option>
+                            <option value="business" {{ (old('management_type', $form->forwarded_to_management_type ?? '') == 'business') ? 'selected' : '' }}>Business</option>
+                            <option value="government" {{ (old('management_type', $form->forwarded_to_management_type ?? '') == 'government') ? 'selected' : '' }}>Government</option>
+                            <option value="enterprise" {{ (old('management_type', $form->forwarded_to_management_type ?? '') == 'enterprise') ? 'selected' : '' }}>Enterprise</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="fas fa-paper-plane me-2"></i> Forward to Management
+                    </button>
                 </div>
-                <button type="submit" class="btn btn-success w-100">
-                    <i class="fas fa-paper-plane me-2"></i> Forward to Management
-                </button>
             </div>
-        </div>
-    </form>
+        </form>
+    @endif
 </div>
 @endsection

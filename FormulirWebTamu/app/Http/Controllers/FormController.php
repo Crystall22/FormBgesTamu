@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Form;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\FormExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FormController extends Controller
 {
@@ -27,7 +29,6 @@ class FormController extends Controller
             'guest_address' => 'required|string|max:200',
             'institution' => 'required|string|max:100',
             'purpose' => 'required|string|max:300',
-            'taken' => 'required|string',
             'pdf_file' => 'required|file|mimes:pdf|max:2048',
         ]);
 
@@ -43,8 +44,8 @@ class FormController extends Controller
         $form->guest_address = $request->guest_address;
         $form->institution = $request->institution;
         $form->purpose = $request->purpose;
-        $form->taken = $request->taken;
-        $form->invoice_number = $this->generateInvoiceNumber($request->taken);
+        $form->taken = auth()->user()->username ?? auth()->user()->name ?? 'receptionist'; // otomatis dari user login
+        $form->invoice_number = $this->generateInvoiceNumber($form->taken);
         $form->date = now()->format('Y-m-d');
         $form->pdf_file = $pdfPath;
         $form->save();
@@ -69,22 +70,25 @@ class FormController extends Controller
         $searchQuery = $request->input('search');
         $sortOrder = $request->input('sort', 'desc');
 
-        $forms = Form::query()
+        // Data pengelolaan (belum diarsipkan)
+        $dataProses = Form::where('is_archived', false)
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('guest_name', 'like', "%{$searchQuery}%")
                     ->orWhere('taken', 'like', "%{$searchQuery}%");
             })
             ->orderBy('created_at', $sortOrder)
-            ->get(); // Hapus ->appends(['search' => $searchQuery, 'sort' => $sortOrder]);
+            ->get();
 
-        if ($request->ajax()) {
-            return response()->json([
-                'html' => view('partials.tabel', compact('forms'))->render(),
-                // Hapus 'pagination' jika tidak pakai paginate
-            ]);
-        }
+        // Data arsip (sudah diarsipkan)
+        $dataArsip = Form::where('is_archived', true)
+            ->when($searchQuery, function ($query) use ($searchQuery) {
+                $query->where('guest_name', 'like', "%{$searchQuery}%")
+                    ->orWhere('taken', 'like', "%{$searchQuery}%");
+            })
+            ->orderBy('updated_at', $sortOrder)
+            ->get();
 
-        return view('dashboard', compact('forms', 'searchQuery', 'sortOrder'));
+        return view('dashboard', compact('dataProses', 'dataArsip', 'searchQuery', 'sortOrder'));
     }
 
     public function deleteScreen(Request $request)
@@ -140,14 +144,9 @@ class FormController extends Controller
     {
         // Mengambil increment number dari id terbesar di database
         $incrementNumber = Form::max('id') + 1;
-        $takenCode = match ($taken) {
-            'Sule' => 'SUL',
-            'Ardi' => 'ARD',
-            'Hutri' => 'HUT',
-        };
 
         // Generate the invoice number
-        return 'INV' . now()->format('Ymd') . $incrementNumber . $takenCode;
+        return 'INV' . now()->format('Ymd') . $incrementNumber;
     }
 
     public function showDetail($id)
@@ -172,5 +171,23 @@ class FormController extends Controller
         return response($svg)
             ->header('Content-Type', 'image/svg+xml')
             ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
+    public function archive($id)
+    {
+        // Hanya receptionist yang boleh mengarsipkan
+        if (auth()->user()->role !== 'receptionist') {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengarsipkan data.');
+        }
+
+        $form = Form::findOrFail($id);
+        $form->is_archived = true; // Pastikan field ini ada di tabel forms
+        $form->save();
+
+        return redirect()->route('dashboard')->with('success', 'Data berhasil diarsipkan.');
+    }
+
+    public function exportArsip()
+    {
+        return Excel::download(new FormExport, 'formArsip.xlsx');
     }
 }

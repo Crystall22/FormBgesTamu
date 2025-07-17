@@ -27,57 +27,39 @@
     </div>
 
     <div class="tab-content" id="managementTabsContent">
+        <!-- Under Review Tab -->
         <div class="tab-pane fade show active" id="underReview" role="tabpanel" aria-labelledby="under-review-tab">
             <h3 class="mb-4"><i class="fas fa-file-alt"></i> Forms Under Review</h3>
             <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered align-middle kai-table">
                     <thead class="table-dark">
                         <tr class="text-center">
                             <th><i class="fas fa-user"></i> Guest Name</th>
-                            <th><i class="fas fa-phone"></i> Phone</th>
                             <th><i class="fas fa-building"></i> Institution</th>
-                            <th><i class="fas fa-user-check"></i> Taken</th>
-                            <th><i class="fas fa-sticky-note"></i> Note</th>
-                            <th><i class="fas fa-cogs"></i> Actions</th>
+                            <th><i class="fas fa-user-check"></i> Receptionist Name</th>
+                            <th><i class="fas fa-sticky-note"></i> Secretary Note</th>
+                            <th class="kai-action-col"><i class="fas fa-cogs"></i> Actions</th>
                             <th><i class="fas fa-file-pdf"></i> PDF</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($formsUnderReview as $form)
-                            <tr class="text-center align-middle clickable-row"
-                                data-url="{{ route('dashboard.detail', $form->id) }}">
-                                <td>
-                                    <i class="fas fa-user text-primary me-1"></i>
-                                    {{ $form->guest_name ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-phone text-info me-1"></i>
-                                    {{ $form->guest_phone ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-building text-secondary me-1"></i>
-                                    {{ $form->institution ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-user-check text-success me-1"></i>
-                                    {{ $form->taken ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-sticky-note text-warning me-1"></i>
-                                    {{ $form->note ?? 'N/A' }}
-                                </td>
-                                <td>
+                            <tr class="text-center align-middle clickable-row" data-url="{{ route('dashboard.detail', $form->id) }}">
+                                <td>{{ $form->guest_name ?? 'N/A' }}</td>
+                                <td>{{ $form->institution ?? 'N/A' }}</td>
+                                <td>{{ $form->taken ?? 'N/A' }}</td>
+                                <td>{{ $form->note ?? 'N/A' }}</td>
+                                <td class="kai-action-col">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <form action="{{ route('management.approve', $form->id) }}" method="POST">
+                                        <form action="{{ route('management.approve', $form->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('PUT')
-                                            <button type="submit" class="btn btn-sm btn-success px-3 py-1" data-bs-toggle="tooltip" title="Approve">
-                                                <i class="fas fa-check"></i>
+                                            <button type="submit" class="btn btn-success btn-sm px-3 py-1 kai-btn-action" data-bs-toggle="tooltip" title="Approve">
+                                                <i class="fas fa-check"></i> Approve
                                             </button>
                                         </form>
-                                        <!-- Reject Button triggers modal -->
-                                        <button type="button" class="btn btn-sm btn-danger px-3 py-1" data-bs-toggle="modal" data-bs-target="#rejectModal-{{ $form->id }}" title="Reject">
-                                            <i class="fas fa-times"></i>
+                                        <button type="button" class="btn btn-danger btn-sm px-3 py-1 kai-btn-action" data-bs-toggle="modal" data-bs-target="#rejectModal-{{ $form->id }}" title="Reject">
+                                            <i class="fas fa-times"></i> Reject
                                         </button>
                                     </div>
                                     <!-- Modal for Reject Reason -->
@@ -113,78 +95,11 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-sm btn-primary px-3 py-1" data-bs-toggle="tooltip" title="View PDF">
+                                    <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-primary btn-sm px-3 py-1" data-bs-toggle="tooltip" title="View PDF">
                                         <i class="fas fa-file-pdf"></i>
                                     </a>
                                 </td>
                             </tr>
-
-                            <!-- Modal for Form Details -->
-                            <div class="modal fade" id="formDetailsModal-{{ $form->id }}" tabindex="-1" aria-labelledby="formDetailsModalLabel-{{ $form->id }}" aria-hidden="true">
-                                <div class="modal-dialog modal-lg modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="formDetailsModalLabel-{{ $form->id }}">
-                                                <i class="fas fa-file-alt me-2"></i>Detail Form
-                                            </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="fas fa-user me-1"></i>Nama Tamu
-                                                </label>
-                                                <p class="form-control-plaintext">
-                                                    {{ $form->guest_name ?? 'N/A' }}
-                                                </p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="fas fa-phone me-1"></i>Telepon
-                                                </label>
-                                                <p class="form-control-plaintext">
-                                                    {{ $form->guest_phone ?? 'N/A' }}
-                                                </p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="fas fa-building me-1"></i>Institusi
-                                                </label>
-                                                <p class="form-control-plaintext">
-                                                    {{ $form->institution ?? 'N/A' }}
-                                                </p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="fas fa-user-check me-1"></i>Diambil
-                                                </label>
-                                                <p class="form-control-plaintext">
-                                                    {{ $form->taken ?? 'N/A' }}
-                                                </p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="fas fa-sticky-note me-1"></i>Catatan
-                                                </label>
-                                                <p class="form-control-plaintext">
-                                                    {{ $form->note ?? 'N/A' }}
-                                                </p>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label class="form-label fw-semibold">
-                                                    <i class="fas fa-file-pdf me-1"></i>File PDF
-                                                </label>
-                                                <a href="{{ asset('storage/' . $form->pdf_file) }}" target="_blank" class="btn btn-primary btn-sm">
-                                                    <i class="fas fa-file-pdf"></i> Lihat PDF
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         @empty
                             <tr>
                                 <td colspan="7" class="text-center text-warning">
@@ -195,13 +110,19 @@
                         @endforelse
                     </tbody>
                 </table>
+                @if (method_exists($formsUnderReview, 'links'))
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $formsUnderReview->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+                    </div>
+                @endif
             </div>
         </div>
 
+        <!-- History Tab -->
         <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
             <h3 class="mb-4"><i class="fas fa-history"></i> History of Accepted and Rejected Forms</h3>
             <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-bordered align-middle kai-table">
                     <thead class="table-dark">
                         <tr class="text-center">
                             <th><i class="fas fa-user"></i> Guest Name</th>
@@ -215,28 +136,12 @@
                     </thead>
                     <tbody>
                         @forelse($formsHistory as $form)
-                            <tr class="text-center align-middle clickable-row"
-                                data-url="{{ route('dashboard.detail', $form->id) }}">
-                                <td>
-                                    <i class="fas fa-user text-primary me-1"></i>
-                                    {{ $form->guest_name ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-phone text-info me-1"></i>
-                                    {{ $form->guest_phone ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-building text-secondary me-1"></i>
-                                    {{ $form->institution ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-user-check text-success me-1"></i>
-                                    {{ $form->taken ?? 'N/A' }}
-                                </td>
-                                <td>
-                                    <i class="fas fa-file-invoice text-info me-1"></i>
-                                    {{ $form->invoice_number ?? 'N/A' }}
-                                </td>
+                            <tr class="text-center align-middle clickable-row" data-url="{{ route('management.show', $form->id) }}">
+                                <td>{{ $form->guest_name ?? 'N/A' }}</td>
+                                <td>{{ $form->guest_phone ?? 'N/A' }}</td>
+                                <td>{{ $form->institution ?? 'N/A' }}</td>
+                                <td>{{ $form->taken ?? 'N/A' }}</td>
+                                <td>{{ $form->invoice_number ?? 'N/A' }}</td>
                                 <td>
                                     @if ($form->status === 'approved')
                                         <span class="badge bg-success text-white"><i class="fas fa-check-circle me-1"></i>Accepted</span>
@@ -267,6 +172,11 @@
                         @endforelse
                     </tbody>
                 </table>
+                @if (method_exists($formsHistory, 'links'))
+                    <div class="d-flex justify-content-center mt-4">
+                        {{ $formsHistory->appends(request()->except('page'))->links('pagination::bootstrap-5') }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -279,7 +189,26 @@
         transition: background 0.2s;
     }
     .clickable-row:hover {
-        background: #f1f3f7 !important;
+        background: #e3f2fd !important;
+    }
+    .kai-action-col {
+        background: #f8f9fa;
+        border-left: 3px solid #007bff;
+        font-weight: bold;
+    }
+    .kai-btn-action {
+        box-shadow: 0 2px 8px rgba(0,123,255,0.15);
+        font-size: 1em;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: transform 0.1s;
+    }
+    .kai-btn-action:hover {
+        transform: scale(1.08);
+        box-shadow: 0 4px 16px rgba(0,123,255,0.25);
+    }
+    .kai-table th, .kai-table td {
+        vertical-align: middle !important;
     }
 </style>
 @endpush

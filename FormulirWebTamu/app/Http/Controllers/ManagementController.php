@@ -17,6 +17,10 @@ class ManagementController extends Controller
         $search = $request->input('search');
         $sortOrder = $request->input('sort', 'desc');
 
+        // Ambil halaman untuk masing-masing tab
+        $underReviewPage = $request->input('underReviewPage', 1);
+        $historyPage = $request->input('historyPage', 1);
+
         $formsUnderReview = Form::where('forwarded_to_management', true)
             ->where('forwarded_to_management_type', $type)
             ->whereNull('status')
@@ -25,7 +29,7 @@ class ManagementController extends Controller
                     ->orWhere('receptionist_name', 'like', "%{$search}%");
             })
             ->orderBy('created_at', $sortOrder)
-            ->paginate(10, ['*'], 'underReviewPage');
+            ->paginate(10, ['*'], 'underReviewPage', $underReviewPage);
 
         $formsHistory = Form::where('forwarded_to_management', true)
             ->where('forwarded_to_management_type', $type)
@@ -35,7 +39,7 @@ class ManagementController extends Controller
                     ->orWhere('receptionist_name', 'like', "%{$search}%");
             })
             ->orderBy('created_at', $sortOrder)
-            ->paginate(10, ['*'], 'historyPage');
+            ->paginate(10, ['*'], 'historyPage', $historyPage);
 
         return view('management.dashboard', compact('formsUnderReview', 'formsHistory', 'type'));
     }

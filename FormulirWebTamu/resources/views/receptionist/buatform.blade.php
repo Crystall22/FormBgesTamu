@@ -8,6 +8,17 @@
         </div>
     @endif
 
+    {{-- Tampilkan error --}}
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="card shadow-lg">
         <div class="card-header">
             <div class="card-title fw-bold">Guest Information</div>
@@ -20,38 +31,50 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="guest_name">Guest Name</label>
-                            <input type="text" class="form-control" id="guest_name" name="guest_name" placeholder="Masukkan Nama Anda" maxlength="75" required>
+                            <input type="text" class="form-control @error('guest_name') is-invalid @enderror"
+                                   id="guest_name" name="guest_name"
+                                   placeholder="Masukkan Nama Anda"
+                                   maxlength="75" required
+                                   value="{{ old('guest_name') }}">
                         </div>
                         <div class="form-group">
                             <label for="guest_phone">Phone Number</label>
-                            <input type="tel" class="form-control" id="guest_phone" name="guest_phone" placeholder="Masukkan Nomor Anda" maxlength="14" pattern="[0-9]{10,14}" required oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                            <input type="tel" class="form-control @error('guest_phone') is-invalid @enderror"
+                                   id="guest_phone" name="guest_phone"
+                                   placeholder="Masukkan Nomor Anda"
+                                   maxlength="14"
+                                   pattern="[0-9]{10,14}" required
+                                   oninput="this.value = this.value.replace(/[^0-9]/g, '');"
+                                   value="{{ old('guest_phone') }}">
                         </div>
                         <div class="form-group">
                             <label for="guest_address">Guest Address</label>
-                            <input type="text" class="form-control" id="guest_address" name="guest_address" placeholder="Masukkan Alamat Anda" maxlength="200" required>
+                            <input type="text" class="form-control @error('guest_address') is-invalid @enderror"
+                                   id="guest_address" name="guest_address"
+                                   placeholder="Masukkan Alamat Anda"
+                                   maxlength="200" required
+                                   value="{{ old('guest_address') }}">
                         </div>
                         <div class="form-group">
                             <label for="institution">Institution</label>
-                            <input type="text" class="form-control" id="institution" name="institution" placeholder="Masukkan Institusi Anda" maxlength="100" required>
+                            <input type="text" class="form-control @error('institution') is-invalid @enderror"
+                                   id="institution" name="institution"
+                                   placeholder="Masukkan Institusi Anda"
+                                   maxlength="100" required
+                                   value="{{ old('institution') }}">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="purpose">Purpose</label>
-                            <textarea class="form-control" id="purpose" name="purpose" rows="3" placeholder="Masukkan tujuan kunjungan" required></textarea>
+                            <textarea class="form-control @error('purpose') is-invalid @enderror"
+                                      id="purpose" name="purpose" rows="3"
+                                      placeholder="Masukkan tujuan kunjungan" required>{{ old('purpose') }}</textarea>
                         </div>
-                        <div class="form-group">
+                       <div class="form-group">
                             <label for="pdf_file">Upload PDF</label>
                             <input type="file" class="form-control" id="pdf_file" name="pdf_file" accept=".pdf" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="taken">Taken By</label>
-                            <select class="form-select" id="taken" name="taken" required>
-                                <option value="Sule">Sule</option>
-                                <option value="Ardi">Ardi</option>
-                                <option value="Hutri">Hutri</option>
-                            </select>
-                        </div>
+                       </div>
                     </div>
                 </div>
 

@@ -22,7 +22,8 @@ class CreateFormsTable extends Migration
             $table->date('date'); // tanggal pengisian form
             $table->text('purpose'); // tujuan kunjungan
             $table->string('pdf_file'); // file PDF yang diunggah
-            $table->string('taken'); // kategori form (Business, Government, Enterprise)
+            $table->string('taken');
+            $table->boolean('is_archived')->default(false); // status arsip
             $table->string('invoice_number'); // nomor invoice yang unik
             $table->text('note')->nullable(); // catatan untuk secretary, nullable karena bisa kosong
             $table->timestamps(); // waktu pembuatan dan update

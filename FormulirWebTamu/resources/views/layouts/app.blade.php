@@ -429,5 +429,57 @@ $(function(){
 });
 </script>
 @endpush
+
+@push('scripts')
+<script>
+@if(auth()->user() && auth()->user()->role === 'secretary')
+setInterval(function() {
+    $.get("{{ route('secretary.checkNewForm') }}", function(data) {
+        if(data.new) {
+            Swal.fire({
+                icon: 'info',
+                title: 'Form Baru',
+                text: 'Ada form baru dari ' + data.name,
+                showConfirmButton: false,
+                timer: 3000
+            });
+        }
+    });
+}, 10000); // cek tiap 10 detik
+@endif
+</script>
+@endpush
+
+@push('scripts')
+<script>
+@if(auth()->user() && auth()->user()->role === 'secretary')
+function loadSecretaryNotif() {
+    $.get("{{ route('secretary.notifNewForms') }}", function(data) {
+        // Badge jumlah
+        $('#notif-badge').text(data.count > 0 ? data.count : '').toggle(data.count > 0);
+
+        // List detail
+        let html = '';
+        if(data.count > 0) {
+            data.forms.forEach(function(form) {
+                html += `<div class="mb-2">
+                    <div class="fw-bold">${form.guest_name}</div>
+                    <div class="small text-muted">${form.institution} &bull; ${form.created_at}</div>
+                    <a href="/secretary/form/${form.id}" class="btn btn-sm btn-primary mt-1">Lihat Form</a>
+                </div><hr>`;
+            });
+        } else {
+            html = '<div class="px-3 py-2 text-muted small">Tidak ada form baru.</div>';
+        }
+        $('#notif-list').html(html);
+    });
+}
+$(function(){
+    loadSecretaryNotif();
+    setInterval(loadSecretaryNotif, 10000);
+});
+@endif
+</script>
+@endpush
 </body>
 </html>

@@ -9,10 +9,39 @@ use Illuminate\Http\Request;
 
 class SecretaryController extends Controller
 {
-    public function dashboard()
+    public function dashboard(Request $request)
     {
-        $forms = Form::whereNull('note')->get();
-        return view('secretary.dashboard', compact('forms'));
+        $forms = Form::whereNull('note')->paginate(6);
+
+        $historyQuery = Form::where('forwarded_to_management', true);
+
+        if ($request->management_type) {
+            $historyQuery->where('forwarded_to_management_type', $request->management_type);
+        }
+        if ($request->start_date) {
+            $historyQuery->whereDate('updated_at', '>=', $request->start_date);
+        }
+        if ($request->end_date) {
+            $historyQuery->whereDate('updated_at', '<=', $request->end_date);
+        }
+        if ($request->search) {
+            $historyQuery->where(function ($q) use ($request) {
+                $q->where('guest_name', 'like', '%' . $request->search . '%')
+                    ->orWhere('institution', 'like', '%' . $request->search . '%');
+            });
+        }
+        if ($request->filter_date) {
+            $historyQuery->whereDate('updated_at', $request->filter_date);
+        }
+
+        $history = $historyQuery->orderByDesc('updated_at')->paginate(6);
+
+        // Jika AJAX, return partial
+        if ($request->ajax()) {
+            return view('.partials.history_list', compact('history'))->render();
+        }
+
+        return view('secretary.dashboard', compact('forms', 'history'));
     }
 
     public function showForm($id)
@@ -48,4 +77,41 @@ class SecretaryController extends Controller
         return redirect()->back()->with('error', 'File not found.');
     }
 
+    public function checkNewForm(Request $request)
+    {
+        // Ambil form terbaru yang belum diarsipkan dan belum di-forward
+        $latestForm = Form::whereNull('note')
+            ->where('created_at', '>=', now()->subMinutes(5)) // misal 5 menit terakhir
+            ->orderByDesc('created_at')
+            ->first();
+
+        if ($latestForm) {
+            return response()->json([
+                'new' => true,
+                'name' => $latestForm->guest_name,
+                'id' => $latestForm->id,
+            ]);
+        }
+        return response()->json(['new' => false]);
+    }
+
+    public function notifNewForms(Request $request)
+    {
+        // Ambil form yang belum dibaca secretary (misal: status/flag tertentu, atau 5 menit terakhir)
+        $forms = \App\Models\Form::where('created_at', '>=', now()->subMinutes(10))
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json([
+            'count' => $forms->count(),
+            'forms' => $forms->map(function ($form) {
+                return [
+                    'id' => $form->id,
+                    'guest_name' => $form->guest_name,
+                    'institution' => $form->institution,
+                    'created_at' => $form->created_at->format('d-m-Y H:i'),
+                ];
+            }),
+        ]);
+    }
 }
