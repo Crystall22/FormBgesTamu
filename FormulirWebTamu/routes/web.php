@@ -13,6 +13,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\QueueController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CallCenterController;
+use App\Http\Controllers\NotificationController;
 
 // Redirect root ke landing
 Route::get('/', fn() => redirect()->route('landing'))->name('landing');
@@ -53,6 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::delete('/form/{id}', [FormController::class, 'destroy'])->name('form.destroy');
         Route::post('/receptionist/delete-period', [FormController::class, 'bulkDelete'])->name('form.bulkDelete');
         Route::post('/dashboard/archive/{id}', [FormController::class, 'archive'])->name('dashboard.archive');
+        Route::post('/dashboard/unarchive/{id}', [FormController::class, 'unarchive'])->name('dashboard.unarchive');
         Route::get('/dashboard/export', [FormController::class, 'exportArsip'])->name('dashboard.export');
     });
 
@@ -62,8 +64,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/secretary/form/{id}', [SecretaryController::class, 'showForm'])->name('secretary.form');
         Route::post('/secretary/form/{id}', [SecretaryController::class, 'updateForm'])->name('secretary.update');
         Route::get('/secretary/download-pdf/{id}', [SecretaryController::class, 'downloadPdf'])->name('secretary.download.pdf');
-        Route::get('/secretary/check-new-form', [SecretaryController::class, 'checkNewForm'])->name('secretary.checkNewForm');
-        Route::get('/secretary/notif-new-forms', [SecretaryController::class, 'notifNewForms'])->name('secretary.notifNewForms');
+        Route::get('/secretary/checkNewForm', [SecretaryController::class, 'checkNewForm'])->name('secretary.checkNewForm');
+        Route::get('/secretary/notifNewForms', [SecretaryController::class, 'notifNewForms'])->name('secretary.notifNewForms');
 
         // User management (hanya secretary)
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -76,9 +78,7 @@ Route::middleware('auth')->group(function () {
 
     // Management
     Route::middleware([RoleMiddleware::class . ':management'])->group(function () {
-        Route::get('/management/dashboard/{type}', [ManagementController::class, 'dashboard'])
-            ->name('management.dashboard')
-            ->where('type', 'business|government|enterprise');
+        Route::get('/management/dashboard/{type}', [ManagementController::class, 'dashboard'])->name('management.dashboard');
         Route::put('/management/approve/{form}', [ManagementController::class, 'approve'])
             ->name('management.approve');
         Route::put('/management/reject/{form}', [ManagementController::class, 'reject'])
@@ -133,6 +133,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/chat/unread/count', [ChatController::class, 'unreadCount'])->name('chat.unread.count');
     Route::get('/chat/unread/list', [ChatController::class, 'unreadList'])->name('chat.unread.list');
 
+    // Notification routes
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications-page', [NotificationController::class, 'page'])->name('notifications.page');
 });
 
 

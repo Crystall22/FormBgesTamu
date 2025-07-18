@@ -103,4 +103,18 @@
         });
     });
 </script>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    if(form){
+        form.addEventListener('submit', function(e) {
+            setTimeout(function() {
+                fetch("{{ route('secretary.notifNewForms') }}");
+            }, 2000);
+        });
+    }
+});
+</script>
+@endpush
 @endsection

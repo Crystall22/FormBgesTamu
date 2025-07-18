@@ -22,11 +22,13 @@
                                 Pengelolaan
                             </a>
                         </li>
+                        @if(auth()->user()->role === 'receptionist')
                         <li class="nav-item">
                             <a class="nav-link" id="arsip-tab" data-bs-toggle="pill" href="#arsip" role="tab" aria-controls="arsip" aria-selected="false">
                                 Arsip
                             </a>
                         </li>
+                        @endif
                     </ul>
                 </div>
                 <div class="card-body">
@@ -107,6 +109,7 @@
                             </div>
                         </div>
                         {{-- Tab Arsip --}}
+                        @if(auth()->user()->role === 'receptionist')
                         <div class="tab-pane fade" id="arsip" role="tabpanel" aria-labelledby="arsip-tab">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h5 class="mb-0">Data Arsip</h5>
@@ -125,8 +128,8 @@
                                             <th>Tujuan</th>
                                             <th>Petugas</th>
                                             <th>Tanggal Arsip</th>
-                                            <th>PDF</th>
                                             <th>Status</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -139,15 +142,6 @@
                                             <td>{{ $form->purpose }}</td>
                                             <td>{{ $form->taken }}</td>
                                             <td data-order="{{ $form->updated_at->format('Y-m-d H:i:s') }}">{{ $form->updated_at->format('d-m-Y H:i') }}</td>
-                                            <td>
-                                                @if($form->pdf_file)
-                                                    <a href="{{ asset('storage/'.$form->pdf_file) }}" target="_blank" class="btn btn-sm btn-info">
-                                                        <i class="fa fa-file-pdf"></i> Lihat
-                                                    </a>
-                                                @else
-                                                    <span class="badge bg-secondary">-</span>
-                                                @endif
-                                            </td>
                                             <td>
                                                 @if ($form->status === 'approved')
                                                     <span class="badge bg-success"><i class="fas fa-check-circle me-1"></i>Accepted</span>
@@ -179,12 +173,21 @@
                                                     <span class="badge bg-secondary">-</span>
                                                 @endif
                                             </td>
+                                            <td>
+                                                <form action="{{ route('dashboard.unarchive', $form->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Kembalikan data ini ke pengelolaan?')">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-sm btn-warning" title="Unarchive">
+                                                        <i class="fa fa-undo"></i> Unarchive
+                                                    </button>
+                                                </form>
+                                            </td>
                                         </tr>
                                         @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

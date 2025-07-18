@@ -71,4 +71,9 @@ class User extends Authenticatable
     {
         return str_starts_with($this->role, 'management-');
     }
+
+    public function archivedForms()
+    {
+        return $this->belongsToMany(Form::class, 'form_archives', 'user_id', 'form_id');
+    }
 }

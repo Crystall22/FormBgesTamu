@@ -26,20 +26,20 @@ class ManagementController extends Controller
             ->whereNull('status')
             ->when($search, function ($query, $search) {
                 return $query->where('guest_name', 'like', "%{$search}%")
-                    ->orWhere('receptionist_name', 'like', "%{$search}%");
+                    ->orWhere('taken', 'like', "%{$search}%");
             })
             ->orderBy('created_at', $sortOrder)
-            ->paginate(10, ['*'], 'underReviewPage', $underReviewPage);
+            ->paginate(5, ['*'], 'underReviewPage', $underReviewPage);
 
         $formsHistory = Form::where('forwarded_to_management', true)
             ->where('forwarded_to_management_type', $type)
             ->whereIn('status', ['approved', 'rejected'])
             ->when($search, function ($query, $search) {
                 return $query->where('guest_name', 'like', "%{$search}%")
-                    ->orWhere('receptionist_name', 'like', "%{$search}%");
+                    ->orWhere('taken', 'like', "%{$search}%");
             })
             ->orderBy('created_at', $sortOrder)
-            ->paginate(10, ['*'], 'historyPage', $historyPage);
+            ->paginate(5, ['*'], 'historyPage', $historyPage);
 
         return view('management.dashboard', compact('formsUnderReview', 'formsHistory', 'type'));
     }

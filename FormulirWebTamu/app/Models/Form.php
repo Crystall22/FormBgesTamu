@@ -23,4 +23,9 @@ class Form extends Model
         'invoice_number',
         'forwarded_to_management'
     ];
+
+    public function archivedBy()
+    {
+        return $this->belongsToMany(User::class, 'form_archives', 'form_id', 'user_id');
+    }
 }

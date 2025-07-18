@@ -8,6 +8,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Support\Facades\Storage;
 use App\Exports\FormExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Models\User;
 
 class FormController extends Controller
 {
@@ -60,8 +61,22 @@ class FormController extends Controller
         $form->qr_code = $qrPath;
         $form->save();
 
+
+        $secretaries = User::where('role', 'secretary')->get();
+        foreach ($secretaries as $secretary) {
+            \App\Models\Notification::create([
+                'user_id' => $secretary->id,
+                'type' => 'form_new',
+                'form_id' => $form->id,
+                'message' => 'Form baru dari ' . $form->guest_name,
+            ]);
+        }
+
         // Redirect ke halaman QR detail setelah submit
-        return redirect()->route('receptionist.qr-detail', $form->id)->with('success', 'Form successfully submitted!');
+        return redirect()
+            ->route('receptionist.qr-detail', $form->id)
+            ->with('trigger_secretary_notif', true)
+            ->with('success', 'Form successfully submitted!');
     }
 
 
@@ -69,9 +84,12 @@ class FormController extends Controller
     {
         $searchQuery = $request->input('search');
         $sortOrder = $request->input('sort', 'desc');
+        $user = auth()->user();
 
-        // Data pengelolaan (belum diarsipkan)
-        $dataProses = Form::where('is_archived', false)
+        // Data pengelolaan (belum diarsipkan oleh user ini)
+        $dataProses = Form::whereDoesntHave('archivedBy', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('guest_name', 'like', "%{$searchQuery}%")
                     ->orWhere('taken', 'like', "%{$searchQuery}%");
@@ -79,8 +97,10 @@ class FormController extends Controller
             ->orderBy('created_at', $sortOrder)
             ->get();
 
-        // Data arsip (sudah diarsipkan)
-        $dataArsip = Form::where('is_archived', true)
+        // Data arsip (sudah diarsipkan oleh user ini)
+        $dataArsip = Form::whereHas('archivedBy', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })
             ->when($searchQuery, function ($query) use ($searchQuery) {
                 $query->where('guest_name', 'like', "%{$searchQuery}%")
                     ->orWhere('taken', 'like', "%{$searchQuery}%");
@@ -135,17 +155,19 @@ class FormController extends Controller
     public function destroy($id)
     {
         $form = Form::findOrFail($id);
-        $form->delete();
+        if ($form->archivedBy()->count() > 0) {
+            $archivers = $form->archivedBy()->pluck('name')->implode(', ');
+            return redirect()->route('form.deleteScreen')->with('error', 'Form tidak dapat dihapus karena sedang diarsipkan oleh: ' . $archivers);
+        }
 
+        $form->delete();
         return redirect()->route('form.deleteScreen')->with('success', 'Form successfully deleted.');
     }
 
     private function generateInvoiceNumber($taken)
     {
-        // Mengambil increment number dari id terbesar di database
         $incrementNumber = Form::max('id') + 1;
 
-        // Generate the invoice number
         return 'INV' . now()->format('Ymd') . $incrementNumber;
     }
 
@@ -174,14 +196,11 @@ class FormController extends Controller
     }
     public function archive($id)
     {
-        // Hanya receptionist yang boleh mengarsipkan
-        if (auth()->user()->role !== 'receptionist') {
-            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengarsipkan data.');
-        }
-
+        $user = auth()->user();
         $form = Form::findOrFail($id);
-        $form->is_archived = true; // Pastikan field ini ada di tabel forms
-        $form->save();
+
+        // Tambahkan ke pivot, tidak mengubah is_archived global
+        $form->archivedBy()->syncWithoutDetaching([$user->id]);
 
         return redirect()->route('dashboard')->with('success', 'Data berhasil diarsipkan.');
     }
@@ -189,5 +208,12 @@ class FormController extends Controller
     public function exportArsip()
     {
         return Excel::download(new FormExport, 'formArsip.xlsx');
+    }
+    public function unarchive($id)
+    {
+        $user = auth()->user();
+        $form = Form::findOrFail($id);
+        $form->archivedBy()->detach($user->id);
+        return redirect()->route('dashboard')->with('success', 'Form berhasil dikembalikan ke pengelolaan.');
     }
 }

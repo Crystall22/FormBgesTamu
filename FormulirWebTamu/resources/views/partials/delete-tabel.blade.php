@@ -27,14 +27,26 @@
             <a href="{{ route('dashboard.detail', $form->id) }}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" title="View Detail">
                 <i class="fas fa-eye"></i>
             </a>
-            <form action="{{ route('form.destroy', $form->id) }}" method="POST" id="delete-form-{{ $form->id }}" style="display:inline;">
-                @csrf
-                @method('DELETE')
-                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete" onclick="confirmDeletion({{ $form->id }})">
-                    <i class="fas fa-trash-alt"></i>
+            @if($form->archivedBy()->count() > 0)
+                <button type="button" class="btn btn-sm btn-secondary" disabled data-bs-toggle="tooltip" title="Tidak bisa dihapus, diarsipkan oleh: {{ $form->archivedBy->pluck('name')->implode(', ') }}">
+                    <i class="fas fa-lock"></i>
                 </button>
-            </form>
+            @else
+                <form action="{{ route('form.destroy', $form->id) }}" method="POST" id="delete-form-{{ $form->id }}" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" title="Delete" onclick="confirmDeletion({{ $form->id }})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
+            @endif
         </div>
+        @if($form->archivedBy()->count() > 0)
+            <div class="small text-danger mt-1">
+                <i class="fas fa-info-circle"></i>
+                Diarsipkan oleh: {{ $form->archivedBy->pluck('name')->implode(', ') }}
+            </div>
+        @endif
     </td>
 </tr>
 @empty

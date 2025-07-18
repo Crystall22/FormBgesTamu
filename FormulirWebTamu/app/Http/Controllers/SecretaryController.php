@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\Notification;
 
 class SecretaryController extends Controller
 {
@@ -64,6 +65,17 @@ class SecretaryController extends Controller
         $form->forwarded_to_management_type = $request->management_type;
         $form->save();
 
+        // Ambil semua user management sesuai variant
+        $managements = User::where('role', 'management-' . $request->management_type)->get();
+        foreach ($managements as $mgmt) {
+            Notification::create([
+                'user_id' => $mgmt->id,
+                'type' => 'form_forwarded',
+                'form_id' => $form->id,
+                'message' => 'Form baru diteruskan ke management (' . ucfirst($request->management_type) . ') oleh ' . auth()->user()->name,
+            ]);
+        }
+
         return redirect()->route('secretary.dashboard')->with('success', 'Form successfully forwarded to management.');
     }
 
@@ -77,41 +89,19 @@ class SecretaryController extends Controller
         return redirect()->back()->with('error', 'File not found.');
     }
 
-    public function checkNewForm(Request $request)
+    public function checkNewForm()
     {
-        // Ambil form terbaru yang belum diarsipkan dan belum di-forward
-        $latestForm = Form::whereNull('note')
-            ->where('created_at', '>=', now()->subMinutes(5)) // misal 5 menit terakhir
-            ->orderByDesc('created_at')
-            ->first();
-
-        if ($latestForm) {
+        $lastChecked = session('secretary_last_checked', now()->subMinutes(10));
+        $form = Form::where('status', 'under review')->where('created_at', '>', $lastChecked)->latest()->first();
+        session(['secretary_last_checked' => now()]);
+        if ($form) {
             return response()->json([
                 'new' => true,
-                'name' => $latestForm->guest_name,
-                'id' => $latestForm->id,
+                'name' => $form->guest_name,
             ]);
         }
         return response()->json(['new' => false]);
     }
 
-    public function notifNewForms(Request $request)
-    {
-        // Ambil form yang belum dibaca secretary (misal: status/flag tertentu, atau 5 menit terakhir)
-        $forms = \App\Models\Form::where('created_at', '>=', now()->subMinutes(10))
-            ->orderByDesc('created_at')
-            ->get();
 
-        return response()->json([
-            'count' => $forms->count(),
-            'forms' => $forms->map(function ($form) {
-                return [
-                    'id' => $form->id,
-                    'guest_name' => $form->guest_name,
-                    'institution' => $form->institution,
-                    'created_at' => $form->created_at->format('d-m-Y H:i'),
-                ];
-            }),
-        ]);
-    }
 }

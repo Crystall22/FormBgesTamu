@@ -324,11 +324,9 @@
 
                         {{-- Di navbar header --}}
                         <li class="nav-item dropdown">
-                            <a class="nav-link position-relative" href="#" id="notifDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link position-relative" href="{{ route('notifications.page') }}">
                                 <i class="fas fa-bell fa-lg"></i>
-                                <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.75em;display:none;">
-                                    {{-- Akan diisi JS --}}
-                                </span>
+                                <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.75em;display:none;"></span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown" style="min-width:300px;">
                                 <li class="dropdown-header fw-bold">Notifikasi</li>
@@ -396,7 +394,7 @@
 <script src="{{ asset('assets/js/setting-demo.js') }}"></script>
 <script src="{{ asset('assets/js/demo.js') }}"></script>
 @stack('scripts')
-@push('scripts')
+{{-- @push('scripts')
 <script>
 setInterval(function() {
     $.get("{{ route('chat.unread.count') }}", function(data) {
@@ -413,73 +411,51 @@ setInterval(function() {
     });
 }, 5000);
 </script>
-@endpush
+@endpush --}}
 
 @push('scripts')
 <script>
 function loadNotif() {
-    $.get("{{ route('chat.unread.list') }}", function(data) {
-        $('#notif-list').html(data.html);
-        $('#notif-badge').text(data.count > 0 ? data.count : '').toggle(data.count > 0);
-    });
-}
-$(function(){
-    loadNotif();
-    setInterval(loadNotif, 10000);
-});
-</script>
-@endpush
-
-@push('scripts')
-<script>
-@if(auth()->user() && auth()->user()->role === 'secretary')
-setInterval(function() {
-    $.get("{{ route('secretary.checkNewForm') }}", function(data) {
-        if(data.new) {
-            Swal.fire({
-                icon: 'info',
-                title: 'Form Baru',
-                text: 'Ada form baru dari ' + data.name,
-                showConfirmButton: false,
-                timer: 3000
-            });
+    $.get("{{ route('notifications.index') }}", function(data) {
+        let badge = $('#notif-badge');
+        if(data.unread > 0) {
+            badge.text(data.unread).show();
+        } else {
+            badge.hide();
         }
-    });
-}, 10000); // cek tiap 10 detik
-@endif
-</script>
-@endpush
-
-@push('scripts')
-<script>
-@if(auth()->user() && auth()->user()->role === 'secretary')
-function loadSecretaryNotif() {
-    $.get("{{ route('secretary.notifNewForms') }}", function(data) {
-        // Badge jumlah
-        $('#notif-badge').text(data.count > 0 ? data.count : '').toggle(data.count > 0);
-
-        // List detail
         let html = '';
-        if(data.count > 0) {
-            data.forms.forEach(function(form) {
+        if(data.list.length > 0) {
+            data.list.forEach(function(n) {
                 html += `<div class="mb-2">
-                    <div class="fw-bold">${form.guest_name}</div>
-                    <div class="small text-muted">${form.institution} &bull; ${form.created_at}</div>
-                    <a href="/secretary/form/${form.id}" class="btn btn-sm btn-primary mt-1">Lihat Form</a>
+                    <div>${n.message}</div>
+                    <div class="small text-muted">${n.created_at}</div>
+                    ${n.form_id ? `<a href="/form/${n.form_id}" class="btn btn-sm btn-primary mt-1">Lihat Form</a>` : ''}
                 </div><hr>`;
             });
         } else {
-            html = '<div class="px-3 py-2 text-muted small">Tidak ada form baru.</div>';
+            html = '<div class="px-3 py-2 text-muted small">Tidak ada notifikasi baru.</div>';
         }
         $('#notif-list').html(html);
     });
 }
 $(function(){
-    loadSecretaryNotif();
-    setInterval(loadSecretaryNotif, 10000);
+    loadNotif();
+    setInterval(loadNotif, 10000); // 10 detik
 });
-@endif
 </script>
 @endpush
+
+
+{{--
+@push('scripts')
+<script>
+@if(session('trigger_secretary_notif'))
+    // Trigger polling notifikasi secretary segera setelah submit form
+    if (window.parent && window.parent.loadSecretaryNotif) {
+        window.parent.loadSecretaryNotif();
+    }
+    @endif
+</script>
+@endpush --}}
 </body>
 </html>
