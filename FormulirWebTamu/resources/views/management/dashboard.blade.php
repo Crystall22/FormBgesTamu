@@ -11,6 +11,30 @@
         ? 'history' : 'underReview';
 @endphp
 
+{{-- Search and Sort Form --}}
+<div class="mb-3">
+    <form method="GET" action="{{ route('management.dashboard', $type) }}" class="row g-2 align-items-center">
+        <div class="col-auto">
+            <input type="text" name="search" class="form-control" placeholder="Cari nama tamu, institusi, atau taken..." value="{{ request('search') }}">
+        </div>
+        <div class="col-auto">
+            <select name="sort" class="form-select">
+                <option value="desc" {{ request('sort', 'desc') == 'desc' ? 'selected' : '' }}>Terbaru</option>
+                <option value="asc" {{ request('sort') == 'asc' ? 'selected' : '' }}>Terlama</option>
+            </select>
+        </div>
+      <input type="hidden" name="tab" value="{{ $activeTab }}">
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-search"></i> Cari
+            </button>
+            @if(request('search') || request('sort'))
+                <a href="{{ route('management.dashboard', $type) }}" class="btn btn-outline-danger ms-2">Reset</a>
+            @endif
+        </div>
+    </form>
+</div>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <!-- Tab Navigation -->
     <ul class="nav nav-tabs" id="managementTabs" role="tablist">
@@ -31,6 +55,7 @@
     <!-- Under Review Tab -->
     <div class="tab-pane fade {{ $activeTab == 'underReview' ? 'show active' : '' }}" id="underReview" role="tabpanel" aria-labelledby="under-review-tab">
         <h3 class="mb-4"><i class="fas fa-file-alt"></i> Forms Under Review</h3>
+
         <div class="table-responsive">
             <table class="table table-hover table-bordered align-middle kai-table">
                 <thead class="table-dark">
@@ -116,7 +141,9 @@
                 <div class="d-flex justify-content-center mt-4">
                     {{ $formsUnderReview->appends([
                         'historyPage' => request('historyPage'),
-                        'tab' => 'underReview'
+                        'tab' => 'underReview',
+                        'search' => request('search'),
+                        'sort' => request('sort')
                     ])->links('pagination::bootstrap-5') }}
                 </div>
             @endif
@@ -181,7 +208,9 @@
                 <div class="d-flex justify-content-center mt-4">
                     {{ $formsHistory->appends([
                         'underReviewPage' => request('underReviewPage'),
-                        'tab' => 'history'
+                        'tab' => 'history',
+                        'search' => request('search'),
+                        'sort' => request('sort')
                     ])->links('pagination::bootstrap-5') }}
                 </div>
             @endif

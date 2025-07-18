@@ -16,17 +16,18 @@ class ManagementController extends Controller
 
         $search = $request->input('search');
         $sortOrder = $request->input('sort', 'desc');
-
-        // Ambil halaman untuk masing-masing tab
         $underReviewPage = $request->input('underReviewPage', 1);
         $historyPage = $request->input('historyPage', 1);
 
         $formsUnderReview = Form::where('forwarded_to_management', true)
             ->where('forwarded_to_management_type', $type)
             ->whereNull('status')
-            ->when($search, function ($query, $search) {
-                return $query->where('guest_name', 'like', "%{$search}%")
-                    ->orWhere('taken', 'like', "%{$search}%");
+            ->when($search, function ($query, $search) use ($type) {
+                return $query->where(function ($q) use ($search, $type) {
+                    $q->where('guest_name', 'like', "%{$search}%")
+                        ->orWhere('institution', 'like', "%{$search}%")
+                        ->orWhere('taken', 'like', "%{$search}%");
+                });
             })
             ->orderBy('created_at', $sortOrder)
             ->paginate(5, ['*'], 'underReviewPage', $underReviewPage);
@@ -35,13 +36,16 @@ class ManagementController extends Controller
             ->where('forwarded_to_management_type', $type)
             ->whereIn('status', ['approved', 'rejected'])
             ->when($search, function ($query, $search) {
-                return $query->where('guest_name', 'like', "%{$search}%")
-                    ->orWhere('taken', 'like', "%{$search}%");
+                return $query->where(function ($q) use ($search) {
+                    $q->where('guest_name', 'like', "%{$search}%")
+                        ->orWhere('institution', 'like', "%{$search}%")
+                        ->orWhere('taken', 'like', "%{$search}%");
+                });
             })
             ->orderBy('created_at', $sortOrder)
             ->paginate(5, ['*'], 'historyPage', $historyPage);
 
-        return view('management.dashboard', compact('formsUnderReview', 'formsHistory', 'type'));
+        return view('management.dashboard', compact('formsUnderReview', 'formsHistory', 'type', 'search', 'sortOrder'));
     }
 
     public function approve($id)
