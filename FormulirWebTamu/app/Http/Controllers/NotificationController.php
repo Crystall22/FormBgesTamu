@@ -13,7 +13,7 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $notifs = \App\Models\Notification::where('user_id', auth()->id())
+        $notifs = Notification::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get()
@@ -29,7 +29,7 @@ class NotificationController extends Controller
     }
     public function page()
     {
-        $notifs = \App\Models\Notification::where('user_id', auth()->id())
+        $notifs = Notification::where('user_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(20);
         return view('notifications.page', compact('notifs'));

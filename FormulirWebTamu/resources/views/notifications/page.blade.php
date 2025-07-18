@@ -21,7 +21,7 @@
                 @forelse($notifs as $notif)
                     @php
                         if(Str::startsWith($userRole, 'secretary')) {
-                            $notifUrl = route('secretary.form.detail', $notif->form_id ?? 0);
+                            $notifUrl = route('secretary.form', $notif->form_id ?? 0);
                         }
                         elseif(Str::startsWith($userRole, 'management')) {
                             $notifUrl = route('management.dashboard', [

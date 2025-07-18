@@ -7,6 +7,7 @@ use App\Models\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Notification;
+use App\Notifications\FormForwardedNotification;
 
 class SecretaryController extends Controller
 {
@@ -74,6 +75,10 @@ class SecretaryController extends Controller
                 'form_id' => $form->id,
                 'message' => 'Form baru diteruskan ke management (' . ucfirst($request->management_type) . ') oleh ' . auth()->user()->name,
             ]);
+            $mgmt->notify(new FormForwardedNotification(
+                $form,
+                "Ada form baru telah diteruskan ke management {$request->management_type}."
+            ));
         }
 
         return redirect()->route('secretary.dashboard')->with('success', 'Form successfully forwarded to management.');
