@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Exports\FormExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\User;
+use App\Notifications\FormCreatedNotification;
 
 class FormController extends Controller
 {
@@ -40,11 +41,11 @@ class FormController extends Controller
         }
 
         $form = new Form();
-        $form->guest_name = $request->guest_name;
-        $form->guest_phone = $request->guest_phone;
-        $form->guest_address = $request->guest_address;
-        $form->institution = $request->institution;
-        $form->purpose = $request->purpose;
+        $form->guest_name = $request->input('guest_name');
+        $form->guest_phone = $request->input('guest_phone');
+        $form->guest_address = $request->input('guest_address');
+        $form->institution = $request->input('institution');
+        $form->purpose = $request->input('purpose');
         $form->taken = auth()->user()->username ?? auth()->user()->name ?? 'receptionist'; // otomatis dari user login
         $form->invoice_number = $this->generateInvoiceNumber($form->taken);
         $form->date = now()->format('Y-m-d');
@@ -64,12 +65,10 @@ class FormController extends Controller
 
         $secretaries = User::where('role', 'secretary')->get();
         foreach ($secretaries as $secretary) {
-            \App\Models\Notification::create([
-                'user_id' => $secretary->id,
-                'type' => 'form_new',
-                'form_id' => $form->id,
-                'message' => 'Form baru dari ' . $form->guest_name,
-            ]);
+            $secretary->notify(new FormCreatedNotification(
+                $form,
+                'Form baru dari Institusi ' . $form->institution
+            ));
         }
 
         // Redirect ke halaman QR detail setelah submit
