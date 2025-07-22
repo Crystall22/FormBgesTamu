@@ -326,14 +326,15 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link position-relative" href="{{ route('notifications.page') }}">
                                 <i class="fas fa-bell fa-lg"></i>
-                                <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.75em;display:none;"></span>
+                                @php
+                                    $count = auth()->user()->unreadNotifications()->count();
+                                @endphp
+                                @if($count > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size:0.75em;">
+                                        {{ $count }}
+                                    </span>
+                                @endif
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notifDropdown" style="min-width:300px;">
-                                <li class="dropdown-header fw-bold">Notifikasi</li>
-                                <li>
-                                    <div id="notif-list" class="px-3 py-2 text-muted small">Tidak ada notifikasi baru.</div>
-                                </li>
-                            </ul>
                         </li>
                     </ul>
                 </div>

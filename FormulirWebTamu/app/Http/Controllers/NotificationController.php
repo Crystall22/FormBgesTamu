@@ -13,25 +13,38 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        $notifs = Notification::where('user_id', auth()->id())
+        $notifs = auth()->user()->notifications()
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get()
             ->map(function ($n) {
                 return [
-                    'message' => $n->message,
+                    'message' => $n->data['message'] ?? '',
                     'created_at' => $n->created_at->format('d-m-Y H:i'),
-                    'form_id' => $n->form_id,
+                    'form_id' => $n->data['form_id'] ?? null,
                 ];
             });
-        $unread = Notification::where('user_id', auth()->id())->whereNull('read_at')->count();
+        $unread = auth()->user()->unreadNotifications()->count();
         return response()->json(['list' => $notifs, 'unread' => $unread]);
     }
     public function page()
     {
-        $notifs = Notification::where('user_id', auth()->id())
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+        $notifs = auth()->user()->notifications()->orderBy('created_at', 'desc')->paginate(20);
         return view('notifications.page', compact('notifs'));
+    }
+    public function read($notifId)
+    {
+        $notif = auth()->user()->notifications()->where('id', $notifId)->first();
+        if ($notif) {
+            $notif->markAsRead();
+        }
+        return redirect()->back();
+    }
+    public function delete($id)
+    {
+        $notif = auth()->user()->notifications()->where('id', $id)->first();
+        if ($notif)
+            $notif->delete();
+        return back();
     }
 }

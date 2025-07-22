@@ -11,11 +11,10 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('user_id'); // penerima notifikasi
-            $table->string('type'); // 'form_new', 'form_forwarded'
-            $table->unsignedBigInteger('form_id')->nullable();
-            $table->string('message');
+            $table->uuid('id')->primary();
+            $table->string('type');
+            $table->morphs('notifiable'); // notifiable_type & notifiable_id
+            $table->json('data');
             $table->timestamp('read_at')->nullable();
             $table->timestamps();
         });

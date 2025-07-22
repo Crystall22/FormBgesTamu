@@ -69,15 +69,9 @@ class SecretaryController extends Controller
         // Ambil semua user management sesuai variant
         $managements = User::where('role', 'management-' . $request->management_type)->get();
         foreach ($managements as $mgmt) {
-            Notification::create([
-                'user_id' => $mgmt->id,
-                'type' => 'form_forwarded',
-                'form_id' => $form->id,
-                'message' => 'Form baru diteruskan ke management (' . ucfirst($request->management_type) . ') oleh ' . auth()->user()->name,
-            ]);
             $mgmt->notify(new FormForwardedNotification(
                 $form,
-                "Ada form baru telah diteruskan ke management {$request->management_type}."
+                "Ada form baru telah diteruskan ke management {$request->management_type} oleh " . auth()->user()->name . "."
             ));
         }
 

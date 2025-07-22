@@ -136,6 +136,8 @@ Route::middleware('auth')->group(function () {
     // Notification routes
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::get('/notifications-page', [NotificationController::class, 'page'])->name('notifications.page');
+    Route::get('/notifications/read/{id}', [NotificationController::class, 'read'])->name('notifications.read');
+    Route::delete('/notifications/{id}', [NotificationController::class, 'delete'])->name('notifications.delete');
 });
 
 

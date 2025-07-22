@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/partials/tabel.blade.php --}}
 <table class="table table-striped table-hover align-middle">
     <thead class="table-dark">
         <tr>
