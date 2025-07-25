@@ -123,7 +123,6 @@
         });
     });
 
-    // Success message when the bulk delete action is completed
     @if(session('success'))
         Swal.fire({
             title: 'Berhasil!',

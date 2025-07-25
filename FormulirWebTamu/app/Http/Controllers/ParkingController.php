@@ -7,14 +7,12 @@ use App\Models\Parking;
 
 class ParkingController extends Controller
 {
-    // Tampilkan daftar parkir
     public function index()
     {
         $parkings = Parking::all();
         return view('parkings.index', compact('parkings'));
     }
 
-    // Form peminjaman mobil
     public function pinjamForm()
     {
         $availableCars = Parking::where('status', 'available')->get();
@@ -34,7 +32,6 @@ class ParkingController extends Controller
 
         $parking = Parking::findOrFail($request->vehicle_id);
 
-        // Pastikan slot mobil yang dipilih tidak null
         if (is_null($parking->slot)) {
             return back()->withErrors(['vehicle_id' => 'Slot parkir mobil ini belum diatur.'])->withInput();
         }
@@ -48,13 +45,11 @@ class ParkingController extends Controller
             'borrower_name' => $request->borrower_name,
             'borrower_position' => $borrower_position,
             'purpose' => $request->purpose,
-            // slot tidak diubah saat peminjaman, tetap pakai slot mobil
         ]);
 
         return redirect()->route('parkings.index')->with('success', 'Mobil berhasil dipinjam.');
     }
 
-    // Form pengembalian mobil
     public function returnForm()
     {
         $vacantCars = Parking::where('status', 'vacant')->get();
@@ -91,7 +86,6 @@ class ParkingController extends Controller
         return redirect()->route('parkings.index')->with('success', 'Mobil berhasil dikembalikan.');
     }
 
-    // CRUD default (create, store, edit, update, destroy) tetap seperti sebelumnya
     public function create()
     {
         return view('parkings.create');

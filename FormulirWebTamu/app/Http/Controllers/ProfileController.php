@@ -7,13 +7,11 @@ use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    // Menampilkan halaman profil
     public function index()
     {
         return view('profile.profiles');
     }
 
-    // Memperbarui profil pengguna
     public function update(Request $request)
     {
         $user = auth()->user();
@@ -39,13 +37,11 @@ class ProfileController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
-    // Menampilkan form ubah password
     public function showChangePasswordForm()
     {
         return view('profile.change-password');
     }
 
-    // Memproses ubah password
     public function changePassword(Request $request)
     {
         $request->validate([
@@ -55,12 +51,10 @@ class ProfileController extends Controller
 
         $user = auth()->user();
 
-        // Verifikasi password lama
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'Password lama tidak sesuai.']);
         }
 
-        // Update password
         $user->update([
             'password' => Hash::make($request->new_password),
         ]);

@@ -85,7 +85,6 @@ class FormController extends Controller
         $sortOrder = $request->input('sort', 'desc');
         $user = auth()->user();
 
-        // Data pengelolaan (belum diarsipkan oleh user ini)
         $dataProses = Form::whereDoesntHave('archivedBy', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         })
@@ -96,7 +95,7 @@ class FormController extends Controller
             ->orderBy('created_at', $sortOrder)
             ->get();
 
-        // Data arsip (sudah diarsipkan oleh user ini)
+        // Data arsip
         $dataArsip = Form::whereHas('archivedBy', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         })
@@ -124,7 +123,6 @@ class FormController extends Controller
             ->paginate(5)
             ->appends(['search' => $searchQuery, 'sort' => $sortOrder]);
 
-        // Check if the request is AJAX
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('partials.delete-tabel', compact('forms'))->render(),
@@ -198,7 +196,6 @@ class FormController extends Controller
         $user = auth()->user();
         $form = Form::findOrFail($id);
 
-        // Tambahkan ke pivot, tidak mengubah is_archived global
         $form->archivedBy()->syncWithoutDetaching([$user->id]);
 
         return redirect()->route('dashboard')->with('success', 'Data berhasil diarsipkan.');

@@ -90,7 +90,6 @@
         const manualProviderContainer = document.getElementById('manual_provider_container');
         const form = document.getElementById('modemForm');
 
-        // Set initial state for manual provider & serial number
         function updateProviderFields() {
             const provider = providerSelect.value;
             if (provider) {
@@ -116,7 +115,6 @@
         providerSelect.addEventListener('change', updateProviderFields);
         updateProviderFields();
 
-        // SweetAlert konfirmasi sebelum submit
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             Swal.fire({

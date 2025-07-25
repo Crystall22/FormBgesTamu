@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/notifications/page.blade.php --}}
 @extends('layouts.app')
 
 @php

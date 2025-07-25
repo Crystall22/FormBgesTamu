@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/receptionist/qr-detail.blade.php --}}
 @extends('layouts.app')
 
 @section('content')
@@ -37,7 +36,6 @@
                             <i class="fa fa-info-circle"></i>
                             Ke Detail
                         </a>
-                    {{-- Tombol Ke Dashboard, hanya tampil jika user login --}}
                     @auth
                         <a href="{{ route('dashboard') }}" class="btn btn-outline-primary">
                         <i class="fa fa-arrow-left me-1"></i> Kembali ke Dashboard

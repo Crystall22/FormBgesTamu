@@ -12,7 +12,7 @@ class ChatController extends Controller
     {
         $search = $request->input('search');
         $role = $request->input('role');
-        $perPage = 10; // jumlah user per halaman
+        $perPage = 10;
 
         $users = User::query()
             ->when($search, fn($q) => $q->where('name', 'like', "%$search%"))
@@ -25,7 +25,6 @@ class ChatController extends Controller
 
         $roles = User::select('role')->distinct()->pluck('role');
 
-        // AJAX response for real-time search/sort & pagination
         if ($request->ajax()) {
             $html = view('partials.chat-user', compact('users'))->render();
             $pagination = $users->links()->render();

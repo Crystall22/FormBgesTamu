@@ -7,17 +7,11 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ModemExport implements FromCollection, WithHeadings
 {
-    /**
-     * Ambil data untuk diexport.
-     */
+
     public function collection()
     {
         return Modem::select('tanggal_terima', 'tanggal_keluar', 'purpose', 'provider_modem', 'serial_number_modem', 'stb_id')->get();
     }
-
-    /**
-     * Tambahkan heading pada file Excel.
-     */
     public function headings(): array
     {
         return [

@@ -1,4 +1,3 @@
-{{-- filepath: resources/views/secretary/form.blade.php --}}
 @extends('layouts.app')
 
 @section('content')

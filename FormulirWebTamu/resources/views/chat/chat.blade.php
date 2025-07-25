@@ -1,15 +1,13 @@
 @extends('layouts.app')
 @section('content')
 <style>
-    /* Agar chat benar-benar full, hilangkan padding container utama */
     .chat-fullscreen-row {
-        min-height: calc(100vh - 110px); /* kira-kira header+footer 110px */
+        min-height: calc(100vh - 110px);
         height: calc(100vh - 110px);
     }
     @media (max-width: 991.98px) {
         .chat-fullscreen-row { min-height: calc(100vh - 90px); height: calc(100vh - 90px);}
     }
-    /* Custom style for image input */
     .input-group .btn-image {
         border-radius: 0;
         background: #f8f9fa;
@@ -30,7 +28,6 @@
 </style>
 <div class="row chat-fullscreen-row gx-0">
     <div class="col-12 d-flex flex-column px-0" style="height:100%;">
-        <!-- Chat Header ala WhatsApp -->
         <div class="d-flex align-items-center gap-3 px-3 py-3 border-bottom bg-white" style="min-height:70px;">
             @php
                 $profilePhoto = $user->profile_photo
@@ -46,14 +43,13 @@
                 <i class="fas fa-arrow-left"></i>
             </a>
         </div>
-        <!-- Chat Body -->
         <div id="chatBody" class="flex-grow-1 px-0 py-3" style="background: #ece5dd; overflow-y:auto; min-height:0;">
             <div class="px-3">
                 {{-- Pesan chat di sini --}}
                 @include('partials.message', ['messages' => $messages])
             </div>
         </div>
-        <!-- Chat Input -->
+
         <div class="border-top bg-white px-3 py-3">
             <form method="post" action="{{ route('chat.send', $user->id) }}" enctype="multipart/form-data">
                 @csrf
@@ -85,12 +81,10 @@ function fetchChat(scrollToBottom = false) {
     $.get("{{ route('chat.fetch', $user->id) }}", function(res) {
         $('#chatBody .px-3').replaceWith(res.html);
 
-        // Setelah update, atur posisi scroll
         if (chatBody) {
             if (scrollToBottom) {
                 chatBody.scrollTop = chatBody.scrollHeight;
             } else {
-                // Pertahankan posisi relatif sebelumnya
                 var newScrollHeight = chatBody.scrollHeight;
                 chatBody.scrollTop = prevScroll + (newScrollHeight - prevScrollHeight);
             }
@@ -99,7 +93,6 @@ function fetchChat(scrollToBottom = false) {
 }
 
 $(function(){
-    // Saat pertama kali load, scroll ke bawah
     var chatBody = document.getElementById('chatBody');
     if(chatBody) chatBody.scrollTop = chatBody.scrollHeight;
 
@@ -156,7 +149,7 @@ $(function(){
                 return;
             }
         }
-        // Scroll ke bawah setelah submit (pesan baru)
+        // Scroll ke bawah setelah submit
         setTimeout(function() {
             fetchChat(true);
         }, 500);

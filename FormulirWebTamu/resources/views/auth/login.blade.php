@@ -23,7 +23,6 @@
             padding: 20px;
         }
 
-        /* Container holding the form */
         .login-container {
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 10px;
@@ -56,7 +55,6 @@
             text-decoration: underline;
         }
 
-        /* Desktop view - logo outside the form box, original size */
         @media (min-width: 769px) {
             .login-wrapper {
                 flex-direction: row;
@@ -79,7 +77,6 @@
             }
         }
 
-        /* Mobile view - logo inside the form container, reduced size */
         @media (max-width: 768px) {
             .login-wrapper {
                 flex-direction: column;
@@ -94,9 +91,7 @@
 </head>
 <body>
 
-    <!-- Wrapper for Logo and Form -->
     <div class="login-wrapper">
-        <!-- Logo Container (outside the form container on desktop, top inside the container on mobile) -->
         <div class="login-logo-container">
             <a href="{{ route('landing') }}">
                 <img src="{{ asset('images/telkom2.png') }}" alt="Telkom" class="logo-img" style="cursor:pointer;">

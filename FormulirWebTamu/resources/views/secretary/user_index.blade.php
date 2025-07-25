@@ -66,13 +66,11 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Attach SweetAlert2 to the delete button
     document.querySelectorAll('.delete-btn').forEach(function(button) {
         button.addEventListener('click', function(e) {
             const userId = this.getAttribute('data-user-id');
             const form = document.getElementById('delete-user-' + userId);
 
-            // SweetAlert2 confirmation
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: 'Data user ini akan dihapus dan tidak dapat dikembalikan.',

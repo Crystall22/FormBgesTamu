@@ -24,7 +24,6 @@ class LoginController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            // Redirect sesuai role
             if ($user->role === 'receptionist') {
                 return redirect()->route('form.create');
             }
@@ -32,7 +31,6 @@ class LoginController extends Controller
                 return redirect()->route('secretary.dashboard');
             }
             if (str_starts_with($user->role, 'management')) {
-                // Ambil tipe management dari role, misal: management-business
                 $type = explode('-', $user->role)[1] ?? 'business';
                 return redirect()->route('management.dashboard', $type);
             }

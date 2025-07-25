@@ -110,7 +110,6 @@
             const startDate = $('#start_date').val();
             const endDate = $('#end_date').val();
 
-            // Validasi input filter sebelum draw
             if (startDate && endDate && endDate < startDate) {
                 e.preventDefault();
                 $('#start_date').addClass('is-invalid');
@@ -131,7 +130,6 @@
             const tanggalTerima = data[1];
             const tanggalKeluar = data[2];
 
-            // Validasi tanggal keluar < tanggal terima
             if (
                 tanggalTerima &&
                 tanggalKeluar &&

@@ -95,7 +95,6 @@
                             </div>
                         @endforelse
                     </div>
-                    {{-- Pagination --}}
                     @if (method_exists($forms, 'links'))
                         <div class="d-flex justify-content-center mt-4">
                             {{ $forms->links('pagination::bootstrap-5') }}
@@ -103,7 +102,6 @@
                     @endif
                 </div>
                 <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-                    {{-- Filter Form --}}
                     <form id="history-filter-form" class="row g-2 mb-3">
                         <div class="col-md-4">
                             <select name="management_type" class="form-select" id="filter-management-type">
@@ -157,7 +155,6 @@
         });
     @endif
 
-    // Aktifkan tab sesuai parameter URL
     document.addEventListener('DOMContentLoaded', function() {
         const urlParams = new URLSearchParams(window.location.search);
         const tab = urlParams.get('tab');
@@ -171,7 +168,6 @@
     });
 
     function bindFilterEvents() {
-        // AJAX filter & search (hanya satu tanggal)
         $('#filter-management-type, #filter-search').off('change keyup').on('change keyup', function() {
             filterHistory();
         });
@@ -187,7 +183,6 @@
             }
         });
 
-        // Rebind pagination links inside #history-list
         $('#history-list').off('click', '.pagination a').on('click', '.pagination a', function(e) {
             e.preventDefault();
             let url = $(this).attr('href');

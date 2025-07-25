@@ -7,7 +7,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" type="image/x-icon" />
 
-    <!-- Fonts and icons -->
     <script src="{{ asset('assets/js/plugin/webfont/webfont.min.js') }}"></script>
     <script>
       WebFont.load({
@@ -34,7 +33,6 @@
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
     @stack('styles')
 
-    {{-- Tambahkan di dalam <head> --}}
     <style>
         .wrapper-guest .main-panel {
             width: 100% !important;
@@ -89,6 +87,11 @@
                         </a>
                         <div class="collapse {{ request()->is('form*') ? 'show' : '' }}" id="receptionistMenu">
                             <ul class="nav nav-collapse">
+                                <li class="nav-item {{ request()->is('receptionist/dashboard') ? 'active' : '' }}">
+                                    <a href="{{ route('receptionist.dashboard') }}">
+                                        <span class="sub-item"><i class="fas fa-table"></i> Dashboard Receptionist </span>
+                                    </a>
+                                </li>
                                 <li class="{{ request()->is('form/create') ? 'active' : '' }}">
                                     <a href="{{ route('form.create') }}">
                                         <span class="sub-item"><i class="fas fa-plus"></i> Buat Form Tamu</span>

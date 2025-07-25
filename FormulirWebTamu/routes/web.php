@@ -14,6 +14,7 @@ use App\Http\Controllers\QueueController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CallCenterController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\MainDashboardController;
 
 // Redirect root ke landing
 Route::get('/', fn() => redirect()->route('landing'))->name('landing');
@@ -43,8 +44,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
 
     // Dashboard umum
-    Route::get('/dashboard', [FormController::class, 'dashboard'])->name('dashboard');
-
+    Route::get('/dashboard', [MainDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/chat/user/{id}/fetch', [ChatController::class, 'fetchMessages'])->name('chat.fetch')->middleware('auth');// Semua route di bawah ini hanya untuk user yang sudah login
 
     // Receptionist
     Route::middleware([RoleMiddleware::class . ':receptionist'])->group(function () {
@@ -56,6 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/dashboard/archive/{id}', [FormController::class, 'archive'])->name('dashboard.archive');
         Route::post('/dashboard/unarchive/{id}', [FormController::class, 'unarchive'])->name('dashboard.unarchive');
         Route::get('/dashboard/export', [FormController::class, 'exportArsip'])->name('dashboard.export');
+        Route::get('/receptionist/dashboard', [FormController::class, 'dashboard'])->name('receptionist.dashboard');
     });
 
     // Secretary
@@ -157,5 +159,5 @@ Route::post('/queue', [QueueController::class, 'store'])->name('queue.store');
 Route::get('/queue/number/{queue}', [QueueController::class, 'show'])->name('queue.show');
 
 
-Route::get('/chat/user/{id}/fetch', [ChatController::class, 'fetchMessages'])->name('chat.fetch')->middleware('auth');// Semua route di bawah ini hanya untuk user yang sudah login
+
 

@@ -2,7 +2,6 @@
     @forelse ($history as $form)
         <div class="col-12 col-md-6 col-lg-4">
             <div class="card border-0 rounded-3 shadow-lg position-relative">
-                {{-- Tujuan Management di pojok kanan atas --}}
                 <span class="badge bg-info position-absolute top-0 end-0 m-3" style="z-index:2;">
                     {{ ucfirst($form->forwarded_to_management_type ?? '-') }}
                 </span>

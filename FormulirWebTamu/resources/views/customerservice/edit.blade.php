@@ -60,7 +60,6 @@
 </div>
 
 @push('scripts')
-<!-- SweetAlert -->
 <script src="{{ asset('assets/js/plugin/sweetalert/sweetalert.min.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -71,7 +70,6 @@
         const manualProviderInput = document.getElementById('manual_provider');
         const modemForm = document.getElementById('modemForm');
 
-        // Dynamic field handling
         providerSelect.addEventListener('change', function () {
             const provider = this.value;
             if (provider) {
@@ -98,7 +96,6 @@
             }
         });
 
-        // Initialize dynamic fields based on current value
         if (providerSelect.value) {
             serialContainer.classList.remove('d-none');
             if (providerSelect.value === 'other') {
@@ -119,7 +116,6 @@
             }
         }
 
-        // Handle form submission with SweetAlert
         modemForm.addEventListener('submit', function (e) {
             e.preventDefault();
 

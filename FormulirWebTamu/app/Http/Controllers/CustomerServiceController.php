@@ -79,7 +79,6 @@ class CustomerServiceController extends Controller
 
         $modem->update($data);
 
-        // Jika AJAX, balas JSON
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
@@ -87,7 +86,6 @@ class CustomerServiceController extends Controller
             ]);
         }
 
-        // Jika bukan AJAX, balas redirect biasa
         return redirect()->route('customerservice.modem.index')->with('success', 'Data modem berhasil diupdate.');
     }
 

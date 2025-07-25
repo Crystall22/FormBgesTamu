@@ -198,7 +198,6 @@
 @push('scripts')
 <script>
     $(document).ready(function () {
-        // Baris tabel bisa diklik untuk akses detail
         $('.clickable-row').on('click', function(e) {
             if (!$(e.target).is('a, button, .btn, .badge, form')) {
                 window.location = $(this).data('href');

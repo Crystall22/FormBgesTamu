@@ -280,7 +280,6 @@
             highlighted.scrollIntoView({behavior: "smooth", block: "center"});
         }
 
-        // Script agar tab tetap aktif setelah reload (paginasi)
         var hash = window.location.hash;
         if (hash) {
             var tabTrigger = document.querySelector('a[href="' + hash + '"]');

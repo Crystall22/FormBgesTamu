@@ -61,7 +61,6 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Function to handle delete confirmation
     function confirmDeletion(formId) {
         Swal.fire({
             title: 'Apakah Anda yakin?',
@@ -74,7 +73,6 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
-                // Submit the form after confirmation
                 document.getElementById('delete-form-' + formId).submit();
             }
         });
